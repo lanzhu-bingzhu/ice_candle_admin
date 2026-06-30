@@ -90,26 +90,29 @@
         >
           H4
         </button>
-        <input type="color" @input="setColor" class="w-6 h-6 rounded cursor-pointer" title="文字颜色" />
-        <input type="color" @input="setBackground" class="w-6 h-6 rounded cursor-pointer" title="背景色" />
-        <select @change="setFontFamily" class="text-xs py-0.5 px-1 rounded border border-slate-300">
-          <option value="">字体</option>
+        <input type="color" :value="currentColor" @input="setColor" class="w-6 h-6 rounded cursor-pointer" title="文字颜色" />
+        <input type="color" :value="currentBgColor" @input="setBackground" class="w-6 h-6 rounded cursor-pointer" title="背景色" />
+        <select v-model="currentFontFamily" @change="setFontFamily" class="text-xs py-0.5 px-1 rounded border border-slate-300">
           <option value="Arial">Arial</option>
           <option value="Times New Roman">Times</option>
           <option value="Courier New">Courier</option>
         </select>
-        <select @change="setFontSize" class="text-xs py-0.5 px-1 rounded border border-slate-300 w-14">
-          <option value="" :selected="editorOptions.fontSize == ''">字号</option>
-          <option value="12px" :selected="editorOptions.fontSize == '12px'">12</option>
-          <option value="14px" :selected="editorOptions.fontSize == '14px'">14</option>
-          <option value="16px" :selected="editorOptions.fontSize == '16px'">16</option>
-          <option value="18px" :selected="editorOptions.fontSize == '18px'">18</option>
-          <option value="20px" :selected="editorOptions.fontSize == '20px'">20</option>
-          <option value="22px" :selected="editorOptions.fontSize == '22px'">22</option>
-          <option value="24px" :selected="editorOptions.fontSize == '24px'">24</option>
-          <option value="26px" :selected="editorOptions.fontSize == '26px'">26</option>
+        <select v-model="currentFontSize" @change="setFontSize" class="text-xs py-0.5 px-1 rounded border border-slate-300 w-14">
+          <option value="12px">12</option>
+          <option value="14px">14</option>
+          <option value="16px">16</option>
+          <option value="18px">18</option>
+          <option value="20px">20</option>
+          <option value="22px">22</option>
+          <option value="24px">24</option>
+          <option value="26px">26</option>
         </select>
       </div>
+      <button @click="clearFormatting"
+        class="px-2 py-1 text-xs rounded hover:bg-red-100 transition-colors cursor-pointer border border-transparent"
+        title="清除格式">
+        🧹 清除
+      </button>
 
       <div class="w-px h-6 bg-slate-300 mx-1"></div>
 
@@ -121,7 +124,7 @@
             :class="{ 'bg-blue-200 border-blue-300': editor.isActive({ textAlign: 'left' }) }"
             title="左对齐"
         >
-          ≡
+          <bars3-bottom-left-icon class="w-4 h-4" />
         </button>
         <button
             @click="editor.chain().focus().setTextAlign('center').run()"
@@ -129,7 +132,7 @@
             :class="{ 'bg-blue-200 border-blue-300': editor.isActive({ textAlign: 'center' }) }"
             title="居中"
         >
-          ≡
+          <bars3-icon class="w-4 h-4" />
         </button>
         <button
             @click="editor.chain().focus().setTextAlign('right').run()"
@@ -137,7 +140,7 @@
             :class="{ 'bg-blue-200 border-blue-300': editor.isActive({ textAlign: 'right' }) }"
             title="右对齐"
         >
-          ≡
+          <bars3-bottom-right-icon class="w-4 h-4" />
         </button>
         <button
             @click="editor.chain().focus().setTextAlign('justify').run()"
@@ -145,13 +148,14 @@
             :class="{ 'bg-blue-200 border-blue-300': editor.isActive({ textAlign: 'justify' }) }"
             title="两端对齐"
         >
-          ≡
+          <bars4-icon class="w-4 h-4" />
         </button>
-        <select @change="setLineHeight" class="text-xs py-0.5 px-1 rounded border border-slate-300 w-14">
-          <option value="">行距</option>
+        <select v-model="currentLineHeight" @change="setLineHeight" class="text-xs py-0.5 px-1 rounded border border-slate-300 w-14">
           <option value="1">1.0</option>
           <option value="1.5">1.5</option>
           <option value="2">2.0</option>
+          <option value="2.5">2.5</option>
+          <option value="3">3.0</option>
         </select>
       </div>
 
@@ -329,6 +333,7 @@ import CodeBlock from '@tiptap/extension-code-block'
 import HorizontalRule from '@tiptap/extension-horizontal-rule'
 import CharacterCount from '@tiptap/extension-character-count'
 import Italic from '@tiptap/extension-italic'
+import { Bars3BottomLeftIcon, Bars3BottomRightIcon, Bars3Icon, Bars4Icon } from '@heroicons/vue/24/outline'
 
 const props = defineProps<{ modelValue: string }>()
 const emit = defineEmits<{ (e: 'update:modelValue', value: string): void }>()
@@ -337,9 +342,19 @@ const isFullscreen = ref(false)
 const isSourceMode = ref(false)
 const htmlSource = ref('')
 
-const editorOptions = {
-  fontSize: ''
+const DEFAULT_TEXT_STYLE = {
+  fontSize: '16px',
+  color: '#334155',      // slate-700
+  fontFamily: 'Arial',
+  lineHeight: '1.5',
+  backgroundColor: '#ffffff',
 }
+
+const currentFontSize = ref(DEFAULT_TEXT_STYLE.fontSize)
+const currentFontFamily = ref(DEFAULT_TEXT_STYLE.fontFamily)
+const currentColor = ref(DEFAULT_TEXT_STYLE.color)
+const currentLineHeight = ref(DEFAULT_TEXT_STYLE.lineHeight)
+const currentBgColor = ref(DEFAULT_TEXT_STYLE.backgroundColor)
 
 // 自动保存 key
 const AUTO_SAVE_KEY = 'editor-autosave'
@@ -383,16 +398,6 @@ const editor = useEditor({
   onUpdate: ({ editor }) => {
     const html = editor.getHTML()
     emit('update:modelValue', html)
-  },
-  onSelectionUpdate({ editor }) {
-    const { state } = editor
-    const { doc, selection } = state;
-    const { from } = selection;
-    const node = doc.nodeAt(from);
-    if (node) {
-      const attrs = node.marks[0].attrs
-      editorOptions.fontSize = attrs.fontSize
-    }
   }
 })
 
@@ -411,6 +416,7 @@ const setColor = (e: Event) => {
 const setBackground = (e: Event) => {
   const color = (e.target as HTMLInputElement).value
   editor.value?.chain().focus().setHighlight({ color }).run()
+  currentBgColor.value = color
 }
 const setFontFamily = (e: Event) => {
   const font = (e.target as HTMLSelectElement).value
@@ -424,6 +430,9 @@ const setFontSize = (e: Event) => {
 const setLineHeight = (e: Event) => {
   const height = (e.target as HTMLSelectElement).value
   if (height) editor.value?.commands.setLineHeight(height)
+}
+const clearFormatting = () => {
+  editor.value?.chain().focus().unsetAllMarks().clearNodes().run()
 }
 
 // 链接
@@ -486,11 +495,35 @@ onMounted(() => {
   if (draft && editor.value && editor.value.getHTML() === '<p></p>') {
     editor.value.commands.setContent(draft)
   }
+
+  if (editor.value) {
+    editor.value.on('selectionUpdate', () => {
+      const style = getCurrentTextStyle()
+      currentFontSize.value = style.fontSize
+      currentFontFamily.value = style.fontFamily
+      currentColor.value = style.color
+      currentLineHeight.value = style.lineHeight
+      currentBgColor.value = style.backgroundColor
+    })
+  }
 })
 
 onBeforeUnmount(() => {
   editor.value?.destroy()
 })
+
+function getCurrentTextStyle() {
+  if (!editor.value) return { ...DEFAULT_TEXT_STYLE }
+  const textAttrs = editor.value.getAttributes('textStyle')
+  const highlightAttrs = editor.value.getAttributes('highlight')
+  return {
+    fontSize: textAttrs.fontSize || DEFAULT_TEXT_STYLE.fontSize,
+    color: textAttrs.color || DEFAULT_TEXT_STYLE.color,
+    fontFamily: textAttrs.fontFamily || DEFAULT_TEXT_STYLE.fontFamily,
+    lineHeight: textAttrs.lineHeight || DEFAULT_TEXT_STYLE.lineHeight,
+    backgroundColor: highlightAttrs.color || DEFAULT_TEXT_STYLE.backgroundColor,
+  }
+}
 </script>
 
 <style scoped>

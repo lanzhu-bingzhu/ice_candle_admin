@@ -30,7 +30,7 @@ import type { Category } from '@/types'
 
 const route = useRoute()
 const router = useRouter()
-const isEdit = computed(() => !!route.params.post_id)    // 修改为 post_id
+const isEdit = computed(() => !!route.params.post_id)
 
 const form = reactive({
   title: '',
@@ -43,7 +43,7 @@ const categories = ref<Category[]>([])
 onMounted(async () => {
   categories.value = await fetchCategories()
   if (isEdit.value) {
-    const post = await fetchPostById(route.params.post_id as string)   // 使用 post_id
+    const post = await fetchPostById(route.params.post_id as string)
     if (post) {
       form.title = post.title
       form.category_id = post.category_id

@@ -1,6 +1,5 @@
 <template>
   <div class="space-y-6">
-    <h2 class="text-2xl font-bold text-slate-800">仪表盘</h2>
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
       <div class="bg-white/80 border border-slate-200 rounded-2xl p-6 shadow-sm">
         <p class="text-slate-500 text-sm">文章总数</p>
