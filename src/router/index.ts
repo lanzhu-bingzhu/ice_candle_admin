@@ -7,9 +7,16 @@ import CategoryList from '@/pages/category/CategoryList.vue'
 import CategoryEditor from '@/pages/category/CategoryEditor.vue'
 import FloorList from '@/pages/floor/FloorList.vue'
 import FloorEditor from '@/pages/floor/FloorEditor.vue'
-import Editor from "@/pages/Editor.vue";
+import Login from '@/pages/Login.vue'
+import Editor from "@/pages/Editor.vue"
 
 const routes = [
+  {
+    path: '/login',
+    name: 'login',
+    component: Login,
+    meta: { requiresAuth: false },
+  },
   {
     path: '/',
     redirect: '/home',
@@ -31,6 +38,17 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(),
   routes,
+})
+
+router.beforeEach((to, from, next) => {
+  const token = localStorage.getItem('admin_token')
+  if (to.meta.requiresAuth !== false && !token) {
+    next('/login')
+  } else if (to.path === '/login' && token) {
+    next('/') // 已登录则重定向到首页
+  } else {
+    next()
+  }
 })
 
 export default router

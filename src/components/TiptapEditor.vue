@@ -1,6 +1,6 @@
 <template>
   <div
-      class="border border-slate-300 rounded-xl bg-white overflow-hidden shadow-sm"
+      class="border border-slate-300 rounded bg-white overflow-hidden shadow-sm"
       :class="{ 'fixed inset-0 z-50 rounded-none': isFullscreen }"
   >
     <!-- 工具栏 -->

@@ -1,35 +1,38 @@
 import request from './api'
-import type { Post, Category, Floor } from '@/types'
+import type { Post, PostResponse, PostListResponse, Category, CategoryResponse, CategoryListResponse, Floor, FloorResponse, FloorListResponse } from '@/types'
 
 // ========== 文章 ==========
-export const fetchPosts = () => request.get<any, Post[]>('/admin/post')
+export const fetchPosts = () => request.get<any, PostListResponse>('/post').then(res => res.data)
 
-export const fetchPostById = (post_id: string) => request.get<any, Post>(`/admin/post/${post_id}`)
+export const fetchPostById = (post_id: string) => request.get<any, PostResponse>(`/post/${post_id}`).then(res => res.data)
 
-export const createPost = (data: Partial<Post>) => request.post<any, Post>('/admin/post', data)
+export const createPost = (data: Partial<Post>) => request.post<any, PostResponse>('/post', data).then(res => res.data)
 
-export const updatePost = (post_id: string, data: Partial<Post>) => request.put<any, Post>(`/admin/post/${post_id}`, data)
+export const updatePost = (post_id: string, data: Partial<Post>) => request.put<any, PostResponse>(`/post/${post_id}`, data).then(res => res.data)
 
-export const deletePost = (post_id: string) => request.delete(`/admin/post/${post_id}`)
+export const deletePost = (post_id: string) => request.delete(`/post/${post_id}`).then(res => res.data)
 
 // ========== 分类 ==========
-export const fetchCategories = () => request.get<any, Category[]>('/admin/category')
-// 新增分类
-export const createCategory = (data: Partial<Category>) => request.post<any, Category>('/admin/category', data)
-// 更新分类
-export const updateCategory = (category_id: string, data: Partial<Category>) => request.put<any, Category>(`/admin/category/${category_id}`, data)
-// 删除分类
-export const deleteCategory = (category_id: string) => request.delete(`/admin/category/${category_id}`)
+export const fetchCategories = () => request.get<any, CategoryListResponse>('/category').then(res => res.data)
 
-export const fetchCategoryById = (category_id: string) => request.get<any, Category>(`/admin/category/${category_id}`)
+export const fetchAllCategories = () => request.get<any, CategoryListResponse>('/category/get_all_category').then(res => res.data)
+
+// 新增分类
+export const createCategory = (data: Partial<Category>) => request.post<any, CategoryResponse>('/category', data).then(res => res.data)
+// 更新分类
+export const updateCategory = (category_id: string, data: Partial<Category>) => request.put<any, CategoryResponse>(`/category/${category_id}`, data).then(res => res.data)
+// 删除分类
+export const deleteCategory = (category_id: string) => request.delete(`/category/${category_id}`).then(res => res.data)
+
+export const fetchCategoryById = (category_id: string) => request.get<any, CategoryResponse>(`/category/${category_id}`).then(res => res.data)
 
 // ========== 楼层 ==========
-export const fetchFloors = () => request.get<any, Floor[]>('/admin/floors')
+export const fetchFloors = () => request.get<any, FloorListResponse>('/floors').then(res => res.data)
 
-export const createFloor = (data: Partial<Floor>) => request.post<any, Floor>('/admin/floor', data)
+export const createFloor = (data: Partial<Floor>) => request.post<any, FloorResponse>('/floor', data).then(res => res.data)
 
-export const updateFloor = (floor_id: string, data: Partial<Floor>) => request.put<any, Floor>(`/admin/floor/${floor_id}`, data)
+export const updateFloor = (floor_id: string, data: Partial<Floor>) => request.put<any, FloorResponse>(`/floor/${floor_id}`, data).then(res => res.data)
 
-export const deleteFloor = (floor_id: string) => request.delete(`/admin/floor/${floor_id}`)
+export const deleteFloor = (floor_id: string) => request.delete(`/floor/${floor_id}`).then(res => res.data)
 
-export const fetchFloorById = (floor_id: string) => request.get<any, Floor>(`/admin/floor/${floor_id}`)
+export const fetchFloorById = (floor_id: string) => request.get<any, FloorResponse>(`/floor/${floor_id}`).then(res => res.data)
