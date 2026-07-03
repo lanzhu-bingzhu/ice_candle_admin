@@ -84,11 +84,7 @@ const saving = ref(false)
 
 // 可选的父级分类：排除自身（编辑时）和已经是子分类的分类（避免多级嵌套，可自行调整）
 const availableParents = computed(() => {
-  return allCategories.value.filter((cat) => {
-    // 编辑时排除自己
-    if (isEdit.value && cat.category_id === route.params.category_id) return false
-    return true
-  })
+  return allCategories.value.filter(cat => !(isEdit.value && cat.category_id == route.params.category_id))
 })
 
 async function loadData() {
