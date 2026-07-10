@@ -1,12 +1,14 @@
 export interface Post {
-  post_id: string
+  post_id: number
   title: string
   type: string
-  content: string
-  category_id: string
+  type_id: number
+  content?: string
+  category_id: number
   summary?: string
   tags?: string[]
   cover?: string
+  images: string[]
   created_at: string
   updated_at: string
 }
@@ -27,12 +29,12 @@ export interface PostResponse {
 }
 
 export interface Category {
-  category_id?: string
+  category_id: string | number
   name: string
   type_id: string | number
   type?: string
   description: string
-  parent_id?: string | null
+  parent_id?: string | number | null
   created_at?: string
   updated_at?: string
 }
@@ -53,17 +55,24 @@ export interface CategoryResponse {
 }
 
 export interface Floor {
-  floor_id: string
-  category_id: string
-  category_name: string
-  type_id: string
-  type_name: string
-  title?: string
+  floor_id: string | number
+  category_id: string | number
+  category: Category
+  type_id: string | number
+  floor_type: FloorType
+  title: string
   description?: string
   image?: string
   link?: string
   alt?: string
   sort: number
+  created_at: string
+  updated_at: string
+}
+
+export interface FloorType {
+  floor_type_id: number | string
+  name: string
   created_at: string
   updated_at: string
 }
@@ -81,4 +90,23 @@ export interface FloorResponse {
   code: number
   message: string
   data: Floor
+}
+
+export interface Task {
+
+}
+
+export interface TaskListResponse {
+  code: number
+  message: string
+  data: {
+    items: Task[]
+    count: number
+  }
+}
+
+export interface TaskResponse {
+  code: number
+  message: string
+  data: Task
 }

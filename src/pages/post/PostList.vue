@@ -7,7 +7,7 @@
       </router-link>
     </div>
     <div class="text-sm bg-white/80 border border-slate-200 rounded-lg overflow-hidden shadow-sm">
-      <table class="w-full text-left">
+      <table class="w-full text-center">
         <thead class="bg-slate-50 text-slate-600 text-sm">
         <tr>
           <th class="p-4">标题</th>

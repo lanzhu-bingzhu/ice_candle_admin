@@ -1,16 +1,13 @@
 <template>
   <div class="bg-white/80 border border-slate-200 rounded-2xl p-6 shadow-sm">
-    <h2 class="text-2xl font-bold text-slate-800 mb-6">
-      {{ isEdit ? '编辑分类' : '新建分类' }}
-    </h2>
+    <h2 class="text-lg font-bold text-slate-800 mb-6">{{ isEdit ? '编辑分类' : '新建分类' }}</h2>
 
-    <form class="space-y-4 text-sm">
+    <div class="space-y-4 text-sm">
       <!-- 分类名称 -->
       <div class="mb-3">
         <label class="w-full p-3 text-left block">分类名称：</label>
         <input v-model="form.name" class="w-full p-2 border border-slate-300 rounded focus:ring-2 focus:ring-blue-400 outline-none" placeholder="输入分类名称"/>
       </div>
-
       <!-- 父级分类 -->
       <div class="mb-3">
         <label class="w-full p-3 text-left block">父级分类：</label>
@@ -21,7 +18,6 @@
           </option>
         </select>
       </div>
-
       <!-- 类型 -->
       <div class="mb-3">
         <label class="w-full p-3 text-left block">类型：</label>
@@ -31,7 +27,6 @@
           <option :value="3">图文</option>
         </select>
       </div>
-
       <!-- 描述 -->
       <div class="mb-3">
         <label class="w-full p-3 text-left block">描述：</label>
@@ -42,19 +37,18 @@
             placeholder="简要描述该分类"
         ></textarea>
       </div>
-
       <!-- 操作按钮 -->
       <div class="flex gap-4">
         <button @click="save" class="px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition">保存</button>
-        <router-link to="/post" class="px-6 py-2 border border-slate-300 rounded hover:bg-slate-50 transition">取消</router-link>
+        <router-link to="/category" class="px-6 py-2 border border-slate-300 rounded hover:bg-slate-50 transition">取消</router-link>
       </div>
-    </form>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, reactive, computed, onMounted } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { useRoute } from 'vue-router'
 import {
   createCategory,
   updateCategory,
@@ -64,15 +58,9 @@ import {
 import type { Category } from '@/types'
 
 const route = useRoute()
-const router = useRouter()
 const isEdit = computed(() => !!route.params.category_id)
 
-const form = reactive<{
-  name: string
-  parent_id: string | null | undefined
-  type_id: string | number
-  description: string
-}>({
+const form = reactive({
   name: '',
   parent_id: null,
   type_id: 1,
@@ -102,7 +90,6 @@ async function loadData() {
     }
   } catch (e: any) {
     alert('加载分类数据失败')
-    router.push('/category')
   }
 }
 
@@ -114,19 +101,12 @@ async function save() {
 
   saving.value = true
   try {
-    const payload: Category = {
-      name: form.name,
-      parent_id: form.parent_id,
-      type_id: form.type_id,
-      description: form.description,
-    }
-
+    const payload = { ...form }
     if (isEdit.value) {
       await updateCategory(route.params.category_id as string, payload)
     } else {
       await createCategory(payload)
     }
-    router.push('/categories')
   } catch (e: any) {
     alert('保存失败：' + (e.message || '未知错误'))
   } finally {

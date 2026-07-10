@@ -7,6 +7,8 @@ import CategoryList from '@/pages/category/CategoryList.vue'
 import CategoryEditor from '@/pages/category/CategoryEditor.vue'
 import FloorList from '@/pages/floor/FloorList.vue'
 import FloorEditor from '@/pages/floor/FloorEditor.vue'
+import TaskList from '@/pages/task/TaskList.vue'
+import TaskEditor from '@/pages/task/TaskEditor.vue'
 import Login from '@/pages/Login.vue'
 import Editor from "@/pages/Editor.vue"
 
@@ -30,6 +32,11 @@ const routes = [
       { path: 'category/new', name: 'category-create', component: CategoryEditor },
       { path: 'category/:category_id/edit', name: 'category-edit', component: CategoryEditor },
       { path: 'floor', name: 'floor-list', component: FloorList },
+      { path: 'floor/new', name: 'floor-create', component: FloorEditor },
+      { path: 'floor/:floor_id/edit', name: 'floor-edit', component: FloorEditor },
+      { path: 'task', name: 'task-list', component: TaskList },
+      { path: 'task/new', name: 'task-create', component: TaskEditor },
+      { path: 'task/:task_id/edit', name: 'task-edit', component: TaskEditor },
       { path: 'editor', name: 'editor', component: Editor },
     ],
   },

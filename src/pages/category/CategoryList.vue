@@ -90,7 +90,7 @@ async function loadCategories() {
   }
 }
 
-async function handleDelete(categoryId: string) {
+async function handleDelete(categoryId: string | number) {
   if (!confirm('确定要删除该分类吗？')) return
   try {
     await deleteCategory(categoryId)

@@ -8,37 +8,42 @@
     </div>
     <!-- 分类表格 -->
     <div class="text-sm bg-white/80 border border-slate-200 rounded-lg overflow-hidden shadow-sm">
-      <table class="w-full text-left">
+      <table class="w-full text-center">
         <thead class="bg-slate-50 text-slate-600">
         <tr>
           <th v-for="column in columns" :class="column.class">{{ column.name }}</th>
         </tr>
         </thead>
         <tbody>
-        <tr v-for="cat in floors" :key="cat.category_id" class="border-t border-slate-100 hover:bg-slate-50 transition">
-          <td class="p-4 font-medium">{{ cat.name }}</td>
-          <td class="p-4 hidden sm:table-cell text-slate-500">
-            {{ getParentName(cat.parent_id) || '顶级分类' }}
+        <tr v-for="floor in floors" :key="floor.floor_id" class="border-t border-slate-100 hover:bg-slate-50 transition">
+          <td class="p-4 font-medium">{{ floor.title }}</td>
+          <td class="p-4 hidden md:table-cell">
+            <span v-if="floor.category">{{ floor.category.name }}</span>
           </td>
           <td class="p-4 hidden md:table-cell">
-              <span class="px-2 py-0.5 rounded-full" :class="cat.type === 'image-text' ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700'">
-                {{ cat.type === 'image-text' ? '图文' : '文章' }}
-              </span>
+            <span v-if="floor.floor_type.name === 'banner'" class="text-xs px-2 py-0.5 rounded-full bg-purple-100 text-purple-700">
+              {{ floor.floor_type.name }}
+            </span>
+            <span v-if="floor.floor_type.name === 'article'" class="text-xs px-2 py-0.5 rounded-full bg-blue-100 text-blue-700">
+              {{ floor.floor_type.name }}
+            </span>
+            <span v-if="floor.floor_type.name === 'image-text'" class="text-xs px-2 py-0.5 rounded-full bg-lime-100 text-lime-700">
+              {{ floor.floor_type.name }}
+            </span>
           </td>
-          <td class="p-4 hidden lg:table-cell text-slate-500">
-            {{ cat.created_at || '-' }}
-          </td>
+          <td class="p-4 hidden lg:table-cell text-slate-500">{{ floor.link }}</td>
+          <td class="p-4 hidden lg:table-cell text-slate-500">{{ floor.sort }}</td>
           <td class="p-4 space-x-2">
-            <router-link :to="`/category/${cat.category_id}/edit`" class="text-blue-500 hover:underline">
+            <router-link :to="`/floor/${floor.floor_id}/edit`" class="text-blue-500 hover:underline">
               编辑
             </router-link>
-            <button @click="handleDelete(cat.category_id)" class="text-red-400 hover:underline">
+            <button @click="handleDelete(floor.floor_id)" class="text-red-400 hover:underline">
               删除
             </button>
           </td>
         </tr>
         <tr v-if="floors.length === 0">
-          <td colspan="5" class="p-8 text-center text-slate-400">暂无分类</td>
+          <td colspan="5" class="p-8 text-center text-slate-400">暂无楼层</td>
         </tr>
         </tbody>
       </table>
@@ -50,19 +55,50 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import {onMounted, ref} from 'vue'
+import type { Floor } from '@/types'
+import { deleteFloor as apiDelete, fetchFloors } from "@/services/admin.ts";
 
-const columns = ref<Array>([
+const columns = ref<Array<any>>([
   { name: '标题', class: 'text-sm p-4' },
   { name: '分类', class: 'text-sm p-4 hidden sm:table-cell' },
   { name: '类型', class: 'text-sm p-4 hidden sm:table-cell' },
-  { name: '路由', class: 'text-sm p-4 hidden sm:table-cell' },
+  { name: '链接', class: 'text-sm p-4 hidden sm:table-cell' },
   { name: '排序', class: 'text-sm p-4 hidden sm:table-cell' },
   { name: '操作', class: 'text-sm p-4' }
 ])
 
-const floors = ref<Array>([])
+const floors = ref<Floor[]>([])
+const totalCount = ref(0)
+const loading = ref(false)
+const error = ref<string | null>(null)
 
+async function loadFloors() {
+  loading.value = true
+  error.value = null
+  try {
+    const data = await fetchFloors()
+    floors.value = data.items
+    totalCount.value = data.count
+  } catch (e: any) {
+    error.value = e.message || '加载文章失败'
+  } finally {
+    loading.value = false
+  }
+}
+
+async function handleDelete(id: string | number) {
+  if (!confirm('确定删除这个楼层吗？')) return
+  try {
+    await apiDelete(String(id))
+    floors.value = floors.value.filter(f => f.floor_id !== id)
+    totalCount.value--
+  } catch (e: any) {
+    alert('删除失败：' + (e.message || '未知错误'))
+  }
+}
+
+onMounted(loadFloors)
 </script>
 
 <style scoped>

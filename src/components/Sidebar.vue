@@ -2,24 +2,9 @@
   <aside class="w-64 bg-gradient-to-b from-slate-800 to-slate-900 text-white flex flex-col flex-shrink-0">
     <div class="p-6 text-2xl font-bold text-cyan-400">IceCandleAdmin</div>
     <nav class="flex-1 px-4 space-y-1">
-      <router-link to="/home" custom v-slot="{ navigate, isActive }">
+      <router-link v-for="item in list" :to="item.link" custom v-slot="{ navigate, isActive }">
         <button @click="navigate" :class="['flex text-sm items-center gap-2 w-full px-4 py-2 rounded transition', isActive ? 'bg-blue-500/20 text-blue-300' : 'hover:bg-white/10 text-slate-300']">
-          仪表盘
-        </button>
-      </router-link>
-      <router-link to="/post" custom v-slot="{ navigate, isActive }">
-        <button @click="navigate" :class="['flex text-sm items-center gap-2 w-full px-4 py-2 rounded transition', isActive ? 'bg-blue-500/20 text-blue-300' : 'hover:bg-white/10 text-slate-300']">
-          文章管理
-        </button>
-      </router-link>
-      <router-link to="/category" custom v-slot="{ navigate, isActive }">
-        <button @click="navigate" :class="['flex text-sm items-center gap-2 w-full px-4 py-2 rounded transition', isActive ? 'bg-blue-500/20 text-blue-300' : 'hover:bg-white/10 text-slate-300']">
-          分类管理
-        </button>
-      </router-link>
-      <router-link to="/floor" custom v-slot="{ navigate, isActive }">
-        <button @click="navigate" :class="['flex text-sm items-center gap-2 w-full px-4 py-2 rounded transition', isActive ? 'bg-blue-500/20 text-blue-300' : 'hover:bg-white/10 text-slate-300']">
-          楼层管理
+          {{ item.name }}
         </button>
       </router-link>
     </nav>
@@ -27,4 +12,13 @@
 </template>
 
 <script setup lang="ts">
+import { ref } from "vue";
+
+const list: any = ref([
+  { name: '仪表盘', link: '/home' },
+  { name: '文章管理', link: '/post' },
+  { name: '分类管理', link: '/category' },
+  { name: '楼层管理', link: '/floor' },
+  { name: '任务管理', link: '/task' },
+])
 </script>
