@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { loginApi } from '@/services/auth'
-import type { LoginParams, LoginResult } from '@/services/auth'
+import type { LoginParams } from '@/services/auth'
 import router from '@/router'
 
 export const useAuthStore = defineStore('auth', () => {

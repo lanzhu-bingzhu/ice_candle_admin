@@ -66,7 +66,7 @@
           </button>
         </span>
         <div v-if="form.task_nodes.length" class="border border-slate-300 rounded p-3 pl-5 pr-5">
-          <template v-for="(node, index) in form.task_nodes">
+          <template v-for="(_node, index) in form.task_nodes">
             <div class="mb-3">
               <span class="w-full p-3 text-left block">
                 子任务 {{ index }}：
@@ -251,7 +251,7 @@ function clearUpload() {
 }
 
 function clearResultUpload(i: number, j: number) {
-  form.task_nodes[i].result.images = form.task_nodes[i].result.images.filter((item, index) => index !== j)
+  form.task_nodes[i].result.images = form.task_nodes[i].result.images.filter((_item, index) => index !== j)
 }
 
 async function uploadFile() {
@@ -305,7 +305,7 @@ async function addTaskNode() {
 }
 
 async function deleteTaskNode(index: number) {
-  form.task_nodes = form.task_nodes.filter((item, index2) => index !== index2)
+  form.task_nodes = form.task_nodes.filter((_item, index2) => index !== index2)
 }
 
 const save = async () => {

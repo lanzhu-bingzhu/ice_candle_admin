@@ -218,7 +218,7 @@ function clearCoverUpload() {
 
 
 function clearUpload(index: number) {
-  form.images = form.images.filter((item, key) => key !== index)
+  form.images = form.images.filter((_item, key) => key !== index)
 }
 
 async function uploadCoverFile() {
