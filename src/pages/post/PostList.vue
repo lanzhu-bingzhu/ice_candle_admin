@@ -13,6 +13,7 @@
           <th class="p-4">标题</th>
           <th class="p-4 hidden sm:table-cell">类型</th>
           <th class="p-4 hidden md:table-cell">分类ID</th>
+          <th class="p-4 hidden sm:table-cell">是否显示</th>
           <th class="p-4 hidden lg:table-cell">创建时间</th>
           <th class="p-4">操作</th>
         </tr>
@@ -27,6 +28,10 @@
               </span>
           </td>
           <td class="p-4 hidden md:table-cell text-slate-500">{{ post.category_id }}</td>
+          <td class="p-4 hidden sm:table-cell">
+            <span v-if="post.is_show" class="text-xs px-2 py-0.5 rounded-full bg-lime-700 text-lime-100">显示</span>
+            <span v-else class="text-xs px-2 py-0.5 rounded-full bg-slate-200 text-slate-700">隐藏</span>
+          </td>
           <td class="p-4 hidden lg:table-cell text-slate-500">{{ post.created_at }}</td>
           <td class="p-4 space-x-2">
             <router-link :to="`/post/${post.post_id}/edit`" class="text-blue-500 hover:underline">编辑</router-link>
@@ -39,7 +44,7 @@
         </tbody>
       </table>
       <div class="px-4 py-3 bg-slate-50 text-sm text-right text-slate-500 border-t border-slate-200">
-        共 {{ totalCount }} 篇文章
+        共 {{ totalCount }} 条数据
       </div>
     </div>
   </div>

@@ -13,8 +13,9 @@
         <tr>
           <th class="p-4">分类名称</th>
           <th class="p-4 hidden sm:table-cell">父级分类</th>
-          <th class="p-4 hidden md:table-cell">类型</th>
-          <th class="p-4 hidden lg:table-cell">创建时间</th>
+          <th class="p-4 hidden sm:table-cell">类型</th>
+          <th class="p-4 hidden sm:table-cell">是否展示</th>
+          <th class="p-4 hidden sm:table-cell">创建时间</th>
           <th class="p-4">操作</th>
         </tr>
         </thead>
@@ -24,7 +25,7 @@
           <td class="p-4 hidden sm:table-cell text-slate-500">
             {{ getParentName(cat.parent_id) || '顶级分类' }}
           </td>
-          <td class="p-4 hidden md:table-cell">
+          <td class="p-4 hidden sm:table-cell">
             <span v-if="cat.type === 'category'" class="text-xs px-2 py-0.5 rounded-full bg-purple-100 text-purple-700">
               {{ cat.type }}
             </span>
@@ -35,7 +36,11 @@
               {{ cat.type }}
             </span>
           </td>
-          <td class="p-4 hidden lg:table-cell text-slate-500">
+          <td class="p-4 hidden sm:table-cell">
+            <span v-if="cat.is_show" class="text-xs px-2 py-0.5 rounded-full bg-lime-700 text-lime-100">显示</span>
+            <span v-else class="text-xs px-2 py-0.5 rounded-full bg-slate-200 text-slate-700">隐藏</span>
+          </td>
+          <td class="p-4 hidden sm:table-cell text-slate-500">
             {{ cat.created_at || '-' }}
           </td>
           <td class="p-4 space-x-2">
@@ -53,7 +58,7 @@
         </tbody>
       </table>
       <div class="px-4 py-3 bg-slate-50 text-sm text-right text-slate-500 border-t border-slate-200">
-        共 {{ totalCount }} 篇文章
+        共 {{ totalCount }} 条数据
       </div>
     </div>
   </div>

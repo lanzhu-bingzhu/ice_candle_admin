@@ -24,6 +24,19 @@
           <input v-model="form.sort" type="number" class="w-full p-2 border border-slate-300 rounded focus:ring-2 focus:ring-blue-400 outline-none" placeholder="排序" />
         </label>
       </div>
+      <div class="mb-3">
+        <label>
+          <span class="w-full p-3 text-left block">是否展示：</span>
+          <span class="w-full p-2 outline-none text-left block">
+            <label>
+              <input v-model="form.is_show" type="radio" name="tag_id" :value="1" /> 是
+            </label>
+            <label>
+              <input v-model="form.is_show" type="radio" name="tag_id" :value="0" class="ml-2" /> 否
+            </label>
+          </span>
+        </label>
+      </div>
 
       <template v-if="form.type_id == 3">
         <div class="mb-3">
@@ -106,7 +119,8 @@ const form = reactive<{
   image: string,
   link: string,
   alt: string,
-  sort: number
+  sort: number,
+  is_show: string | number
 }>({
   category_id: 0,
   type_id: 1,
@@ -115,7 +129,8 @@ const form = reactive<{
   image: '',
   link: '',
   alt: '',
-  sort: 0
+  sort: 0,
+  is_show: 1
 })
 
 const categories = ref<Category[]>([])
@@ -139,6 +154,7 @@ onMounted(async () => {
       form.link = floor.link ? floor.link : ''
       form.alt = floor.alt ? floor.alt : ''
       form.sort = floor.sort ? floor.sort : 0
+      form.is_show = floor.is_show ? floor.is_show : 1
     }
   }
 })

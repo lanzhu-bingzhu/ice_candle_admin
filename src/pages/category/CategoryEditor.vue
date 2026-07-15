@@ -37,6 +37,19 @@
             placeholder="简要描述该分类"
         ></textarea>
       </div>
+      <div class="mb-3">
+        <label>
+          <span class="w-full p-3 text-left block">是否展示：</span>
+          <span class="w-full p-2 outline-none text-left block">
+            <label>
+              <input v-model="form.is_show" type="radio" name="tag_id" :value="1" /> 是
+            </label>
+            <label>
+              <input v-model="form.is_show" type="radio" name="tag_id" :value="0" class="ml-2" /> 否
+            </label>
+          </span>
+        </label>
+      </div>
       <!-- 操作按钮 -->
       <div class="flex gap-4">
         <button @click="save" class="px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition">保存</button>
@@ -60,11 +73,18 @@ import type { Category } from '@/types'
 const route = useRoute()
 const isEdit = computed(() => !!route.params.category_id)
 
-const form = reactive({
+const form = reactive<{
+  name: string,
+  parent_id?: string | number | null,
+  type_id: string | number,
+  description: string,
+  is_show: string | number
+}>({
   name: '',
-  parent_id: null,
+  parent_id: 0,
   type_id: 1,
   description: '',
+  is_show: 1
 })
 
 const allCategories = ref<Category[]>([])
@@ -78,14 +98,15 @@ const availableParents = computed(() => {
 async function loadData() {
   try {
     const data = await fetchAllCategories()
-    allCategories.value = data.items
+    allCategories.value = data.items.filter(item => item.parent_id == 0)
     if (isEdit.value) {
       const cat = await fetchCategoryById(route.params.category_id as string)
       if (cat) {
         form.name = cat.name
-        form.parent_id = cat.parent_id || null
+        form.parent_id = cat.parent_id
         form.type_id = cat.type_id
-        form.description = cat.description || ''
+        form.description = cat.description
+        form.is_show = cat.is_show
       }
     }
   } catch (e: any) {

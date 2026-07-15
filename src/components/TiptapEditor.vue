@@ -335,7 +335,7 @@ import CharacterCount from '@tiptap/extension-character-count'
 import Italic from '@tiptap/extension-italic'
 import { Bars3BottomLeftIcon, Bars3BottomRightIcon, Bars3Icon, Bars4Icon } from '@heroicons/vue/24/outline'
 
-const props = defineProps<{ modelValue: string }>()
+const props = defineProps<{ modelValue: string, autoSaveKey: string }>()
 const emit = defineEmits<{ (e: 'update:modelValue', value: string): void }>()
 
 const isFullscreen = ref(false)
@@ -357,7 +357,7 @@ const currentLineHeight = ref(DEFAULT_TEXT_STYLE.lineHeight)
 const currentBgColor = ref(DEFAULT_TEXT_STYLE.backgroundColor)
 
 // 自动保存 key
-const AUTO_SAVE_KEY = 'editor-autosave'
+const AUTO_SAVE_KEY = 'editor-autosave-' + props.autoSaveKey
 
 // 编辑器实例
 const editor = useEditor({

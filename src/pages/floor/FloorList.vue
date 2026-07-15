@@ -33,6 +33,10 @@
           </td>
           <td class="p-4 hidden lg:table-cell text-slate-500">{{ floor.link }}</td>
           <td class="p-4 hidden lg:table-cell text-slate-500">{{ floor.sort }}</td>
+          <td class="p-4 hidden sm:table-cell">
+            <span v-if="floor.is_show" class="text-xs px-2 py-0.5 rounded-full bg-lime-700 text-lime-100">显示</span>
+            <span v-else class="text-xs px-2 py-0.5 rounded-full bg-slate-200 text-slate-700">隐藏</span>
+          </td>
           <td class="p-4 space-x-2">
             <router-link :to="`/floor/${floor.floor_id}/edit`" class="text-blue-500 hover:underline">
               编辑
@@ -48,7 +52,7 @@
         </tbody>
       </table>
       <div class="px-4 py-3 bg-slate-50 text-sm text-right text-slate-500 border-t border-slate-200">
-        共 {{ totalCount }} 篇文章
+        共 {{ totalCount }} 条数据
       </div>
     </div>
   </div>
@@ -65,6 +69,7 @@ const columns = ref<Array<any>>([
   { name: '类型', class: 'text-sm p-4 hidden sm:table-cell' },
   { name: '链接', class: 'text-sm p-4 hidden sm:table-cell' },
   { name: '排序', class: 'text-sm p-4 hidden sm:table-cell' },
+  { name: '是否显示', class: 'text-sm p-4 hidden sm:table-cell' },
   { name: '操作', class: 'text-sm p-4' }
 ])
 
@@ -81,7 +86,7 @@ async function loadFloors() {
     floors.value = data.items
     totalCount.value = data.count
   } catch (e: any) {
-    error.value = e.message || '加载文章失败'
+    error.value = e.message || '加载楼层失败'
   } finally {
     loading.value = false
   }

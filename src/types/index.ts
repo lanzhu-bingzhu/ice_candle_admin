@@ -9,6 +9,7 @@ export interface Post {
   tags?: string[]
   cover?: string
   images: string[]
+  is_show: string | number
   created_at: string
   updated_at: string
 }
@@ -35,6 +36,7 @@ export interface Category {
   type?: string
   description: string
   parent_id?: string | number | null
+  is_show: string | number
   created_at?: string
   updated_at?: string
 }
@@ -66,6 +68,7 @@ export interface Floor {
   link?: string
   alt?: string
   sort: number
+  is_show: string | number
   created_at: string
   updated_at: string
 }
@@ -93,7 +96,32 @@ export interface FloorResponse {
 }
 
 export interface Task {
+  task_id: string | number
+  name: string
+  title: string
+  overall_description: string
+  header_image: string
+  deadline: string
+  task_nodes: TaskNode[]
+  is_show: string | number
+  created_at: string
+  updated_at: string
+}
 
+export interface TaskNode {
+  task_node_id: string | number
+  task_id: string | number
+  title: string
+  description: string
+  details: string
+  status_id: number
+  completed_at: string
+  result: {
+    text: string,
+    images: string[],
+  }
+  created_at: string
+  updated_at: string
 }
 
 export interface TaskListResponse {
@@ -109,4 +137,26 @@ export interface TaskResponse {
   code: number
   message: string
   data: Task
+}
+
+export interface PostTag {
+  post_tag_id: string | number
+  name: string
+  created_at: string
+  updated_at: string
+}
+
+export interface PostTagListResponse {
+  code: number
+  message: string
+  data: {
+    items: PostTag[]
+    count: number
+  }
+}
+
+export interface PostTagResponse {
+  code: number
+  message: string
+  data: PostTag
 }

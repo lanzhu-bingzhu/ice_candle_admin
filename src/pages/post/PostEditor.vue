@@ -37,13 +37,38 @@
       </div>
       <div class="mb-3">
         <label>
+          <span class="w-full p-3 text-left block">标签：</span>
+          <span class="w-full p-2 outline-none text-left block">
+            <template v-for="(tag, index) in postTags">
+              <label>
+                <input v-model="form.tags" type="checkbox" name="tag_id" :value="tag.post_tag_id" :class="index > 0 ? 'ml-2' : ''" /> {{ tag.name }}
+              </label>
+            </template>
+          </span>
+        </label>
+      </div>
+      <div class="mb-3">
+        <label>
+          <span class="w-full p-3 text-left block">是否展示：</span>
+          <span class="w-full p-2 outline-none text-left block">
+            <label>
+              <input v-model="form.is_show" type="radio" name="tag_id" :value="1" /> 是
+            </label>
+            <label>
+              <input v-model="form.is_show" type="radio" name="tag_id" :value="0" class="ml-2" /> 否
+            </label>
+          </span>
+        </label>
+      </div>
+      <div class="mb-3">
+        <label>
           <span class="w-full p-3 text-left block">类型：</span>
           <span class="w-full p-2 outline-none text-left block">
             <label>
-              <input v-model="form.type_id" type="radio" name="type_id" :value="1" /> article
+              <input v-model="form.type_id" type="radio" name="tag_id" :value="1" /> article
             </label>
             <label>
-              <input v-model="form.type_id" type="radio" name="type_id" :value="2" class="ml-2" /> image-text
+              <input v-model="form.type_id" type="radio" name="tag_id" :value="2" class="ml-2" /> image-text
             </label>
           </span>
         </label>
@@ -57,7 +82,7 @@
           </label>
         </div>
         <div class="mb-3">
-          <TiptapEditor v-model="form.content" />
+          <TiptapEditor v-model="form.content" :auto-save-key="`post-edit-${postId}-form-summary`" />
         </div>
       </template>
 
@@ -103,14 +128,26 @@
 import { reactive, ref, onMounted, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import TiptapEditor from '@/components/TiptapEditor.vue'
-import { fetchCategories, createPost, updatePost, fetchPostById } from '@/services/admin'
-import type { Category } from '@/types'
+import { fetchAllCategories, fetchAllPostTags, createPost, updatePost, fetchPostById } from '@/services/admin'
+import type { Category, PostTag } from '@/types'
 import { uploadImage } from "@/services/upload.ts";
 
 const route = useRoute()
 const isEdit = computed(() => !!route.params.post_id)
+const postId = isEdit ? route.params.post_id : 0
 
-const form = reactive({
+const form = reactive<{
+  title: string,
+  category_id: number,
+  content: string,
+  type_id: number,
+  summary: string,
+  cover: string,
+  description: string,
+  images: string[],
+  tags: string[],
+  is_show: string | number
+}>({
   title: '',
   category_id: 0,
   content: '',
@@ -118,15 +155,20 @@ const form = reactive({
   summary: '',
   cover: '',
   description: '',
-  images: [] as Array<string>,
+  images: [],
+  tags: [],
+  is_show: 1
 })
 
 const categories = ref<Category[]>([])
+const postTags = ref<PostTag[]>([])
+
 const fileCoverInput = ref<HTMLInputElement>()
 const selectedCoverFile = ref<File | null>(null)
 const uploadingCover = ref(false)
 const uploadCoverError = ref('')
 const uploadedCoverUrl = ref('')
+
 const fileInput = ref<HTMLInputElement>()
 const selectedFile = ref<File | null>(null)
 const uploading = ref(false)
@@ -134,8 +176,10 @@ const uploadError = ref('')
 const uploadedUrl = ref('')
 
 onMounted(async () => {
-  const data = await fetchCategories()
-  categories.value = data.items
+  const allCategory = await fetchAllCategories()
+  categories.value = allCategory.items
+  const allPostTag = await fetchAllPostTags()
+  postTags.value = allPostTag.items
   if (isEdit.value) {
     const post = await fetchPostById(route.params.post_id as string)
     if (post) {
@@ -146,6 +190,8 @@ onMounted(async () => {
       form.content = post.content ? post.content : ''
       form.cover = post.cover ? post.cover : ''
       form.images = post.images ? post.images : []
+      form.tags = post.tags ? post.tags : []
+      form.is_show = post.is_show ? post.is_show : 1
     }
   }
 })
