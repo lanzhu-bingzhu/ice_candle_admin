@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-white/80 border border-slate-200 rounded-2xl p-6 shadow-sm">
+  <div class="bg-white/80 border border-slate-200 rounded-lg p-6 shadow-sm relative">
     <h2 class="text-lg font-bold text-slate-800 mb-6">{{ isEdit ? '编辑分类' : '新建分类' }}</h2>
 
     <div class="space-y-4 text-sm">
@@ -42,10 +42,10 @@
           <span class="w-full p-3 text-left block">是否展示：</span>
           <span class="w-full p-2 outline-none text-left block">
             <label>
-              <input v-model="form.is_show" type="radio" name="tag_id" :value="1" /> 是
+              <input v-model="form.is_show" type="radio" name="is_show" :value="1" /> 是
             </label>
             <label>
-              <input v-model="form.is_show" type="radio" name="tag_id" :value="0" class="ml-2" /> 否
+              <input v-model="form.is_show" type="radio" name="is_show" :value="0" class="ml-2" /> 否
             </label>
           </span>
         </label>
@@ -56,12 +56,13 @@
         <router-link to="/category" class="px-6 py-2 border border-slate-300 rounded hover:bg-slate-50 transition">取消</router-link>
       </div>
     </div>
+    <loading :loading="saving"></loading>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, reactive, computed, onMounted } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import {
   createCategory,
   updateCategory,
@@ -69,8 +70,10 @@ import {
   fetchAllCategories,
 } from '@/services/admin'
 import type { Category } from '@/types'
+import Loading from "@/components/Loading.vue";
 
 const route = useRoute()
+const router = useRouter()
 const isEdit = computed(() => !!route.params.category_id)
 
 const form = reactive<{
@@ -97,6 +100,7 @@ const availableParents = computed(() => {
 
 async function loadData() {
   try {
+    saving.value = true
     const data = await fetchAllCategories()
     allCategories.value = data.items.filter(item => item.parent_id == 0)
     if (isEdit.value) {
@@ -109,8 +113,10 @@ async function loadData() {
         form.is_show = cat.is_show
       }
     }
+    saving.value = false
   } catch (e: any) {
     alert('加载分类数据失败')
+    saving.value = false
   }
 }
 
@@ -126,7 +132,8 @@ async function save() {
     if (isEdit.value) {
       await updateCategory(route.params.category_id as string, payload)
     } else {
-      await createCategory(payload)
+      const result = await createCategory(payload)
+      router.push(`/category/${result}/edit`)
     }
   } catch (e: any) {
     alert('保存失败：' + (e.message || '未知错误'))

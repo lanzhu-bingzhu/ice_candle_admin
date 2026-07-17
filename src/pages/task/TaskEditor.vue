@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-white/80 border border-slate-200 rounded-lg p-6 shadow-sm">
+  <div class="bg-white/80 border border-slate-200 rounded-lg p-6 shadow-sm relative">
     <h2 class="text-lg font-bold text-slate-800 mb-6">{{ isEdit ? '编辑任务' : '新建任务' }}</h2>
     <div class="space-y-4 text-sm">
       <div class="mb-3">
@@ -50,10 +50,10 @@
           <span class="w-full p-3 text-left block">是否展示：</span>
           <span class="w-full p-2 outline-none text-left block">
             <label>
-              <input v-model="form.is_show" type="radio" name="tag_id" :value="1" /> 是
+              <input v-model="form.is_show" type="radio" name="is_show" :value="1" /> 是
             </label>
             <label>
-              <input v-model="form.is_show" type="radio" name="tag_id" :value="0" class="ml-2" /> 否
+              <input v-model="form.is_show" type="radio" name="is_show" :value="0" class="ml-2" /> 否
             </label>
           </span>
         </label>
@@ -158,19 +158,23 @@
         <router-link to="/task" class="px-6 py-2 border border-slate-300 rounded hover:bg-slate-50 transition">取消</router-link>
       </div>
     </div>
+    <loading :loading="saving"></loading>
   </div>
 </template>
 
 <script setup lang="ts">
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { computed, onMounted, reactive, ref } from "vue";
 import { createTask, fetchTaskById, updateTask } from "@/services/admin.ts";
 import TiptapEditor from '@/components/TiptapEditor.vue'
 import { uploadImage } from "@/services/upload.ts";
+import Loading from "@/components/Loading.vue";
 
 const route = useRoute()
+const router = useRouter()
 const isEdit = computed(() => !!route.params.task_id)
 const taskId = isEdit ? route.params.task_id : 0
+const saving = ref(false)
 
 const fileInput = ref<HTMLInputElement>()
 const selectedFile = ref<File | null>(null)
@@ -214,7 +218,10 @@ const form = reactive<{
   is_show: 1
 })
 
-onMounted(async () => {
+onMounted(loadData)
+
+async function loadData() {
+  saving.value = true
   if (isEdit.value) {
     const task = await fetchTaskById(route.params.task_id as string)
     if (task) {
@@ -227,8 +234,8 @@ onMounted(async () => {
       form.is_show = task.is_show
     }
   }
-})
-
+  saving.value = false
+}
 
 function handleFileChange(e: Event) {
   const target = e.target as HTMLInputElement
@@ -310,11 +317,14 @@ async function deleteTaskNode(index: number) {
 
 const save = async () => {
   const payload = { ...form }
+  saving.value = true
   if (isEdit.value) {
     await updateTask(route.params.task_id as string, payload)
   } else {
-    await createTask(payload)
+    const result = await createTask(payload)
+    router.push(`/task/${result}/edit`)
   }
+  saving.value = false
 }
 </script>
 

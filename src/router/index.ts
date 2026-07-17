@@ -10,7 +10,7 @@ import FloorEditor from '@/pages/floor/FloorEditor.vue'
 import TaskList from '@/pages/task/TaskList.vue'
 import TaskEditor from '@/pages/task/TaskEditor.vue'
 import Login from '@/pages/Login.vue'
-import Editor from "@/pages/Editor.vue"
+import UserInfo from "@/pages/setting/UserInfo.vue";
 
 const routes = [
   {
@@ -37,7 +37,7 @@ const routes = [
       { path: 'task', name: 'task-list', component: TaskList },
       { path: 'task/new', name: 'task-create', component: TaskEditor },
       { path: 'task/:task_id/edit', name: 'task-edit', component: TaskEditor },
-      { path: 'editor', name: 'editor', component: Editor },
+      { path: 'setting', name: 'setting', component: UserInfo },
     ],
   },
 ]

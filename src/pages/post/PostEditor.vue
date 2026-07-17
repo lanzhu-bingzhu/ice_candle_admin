@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-white/80 border border-slate-200 rounded-lg p-6 shadow-sm">
+  <div class="bg-white/80 border border-slate-200 rounded-lg p-6 shadow-sm relative">
     <h2 class="text-lg font-bold text-slate-800 mb-6">{{ isEdit ? '编辑文章' : '新建文章' }}</h2>
     <div class="space-y-4 text-sm">
       <div class="mb-3">
@@ -52,10 +52,10 @@
           <span class="w-full p-3 text-left block">是否展示：</span>
           <span class="w-full p-2 outline-none text-left block">
             <label>
-              <input v-model="form.is_show" type="radio" name="tag_id" :value="1" /> 是
+              <input v-model="form.is_show" type="radio" name="is_show" :value="1" /> 是
             </label>
             <label>
-              <input v-model="form.is_show" type="radio" name="tag_id" :value="0" class="ml-2" /> 否
+              <input v-model="form.is_show" type="radio" name="is_show" :value="0" class="ml-2" /> 否
             </label>
           </span>
         </label>
@@ -121,18 +121,21 @@
         <router-link to="/post" class="px-6 py-2 border border-slate-300 rounded hover:bg-slate-50 transition">取消</router-link>
       </div>
     </div>
+    <loading :loading="saving"></loading>
   </div>
 </template>
 
 <script setup lang="ts">
 import { reactive, ref, onMounted, computed } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import TiptapEditor from '@/components/TiptapEditor.vue'
 import { fetchAllCategories, fetchAllPostTags, createPost, updatePost, fetchPostById } from '@/services/admin'
 import type { Category, PostTag } from '@/types'
 import { uploadImage } from "@/services/upload.ts";
+import Loading from "@/components/Loading.vue";
 
 const route = useRoute()
+const router = useRouter()
 const isEdit = computed(() => !!route.params.post_id)
 const postId = isEdit ? route.params.post_id : 0
 
@@ -162,6 +165,7 @@ const form = reactive<{
 
 const categories = ref<Category[]>([])
 const postTags = ref<PostTag[]>([])
+const saving = ref(false)
 
 const fileCoverInput = ref<HTMLInputElement>()
 const selectedCoverFile = ref<File | null>(null)
@@ -175,7 +179,10 @@ const uploading = ref(false)
 const uploadError = ref('')
 const uploadedUrl = ref('')
 
-onMounted(async () => {
+onMounted(loadData)
+
+async function loadData() {
+  saving.value = true
   const allCategory = await fetchAllCategories()
   categories.value = allCategory.items
   const allPostTag = await fetchAllPostTags()
@@ -194,7 +201,8 @@ onMounted(async () => {
       form.is_show = post.is_show ? post.is_show : 1
     }
   }
-})
+  saving.value = false
+}
 
 function handleCoverFileChange(e: Event) {
   const target = e.target as HTMLInputElement
@@ -259,10 +267,13 @@ async function uploadMediaFile() {
 
 const save = async () => {
   const payload = { ...form }
+  saving.value = true
   if (isEdit.value) {
     await updatePost(route.params.post_id as string, payload)
   } else {
-    await createPost(payload)
+    const result = await createPost(payload)
+    router.push(`/post/${result}/edit`)
   }
+  saving.value = false
 }
 </script>

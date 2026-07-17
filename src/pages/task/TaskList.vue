@@ -2,12 +2,15 @@
   <div class="space-y-6">
     <div class="flex justify-between items-center">
       <h2 class="text-xl font-bold text-slate-800">任务管理</h2>
-      <router-link to="/task/new" class="text-sm px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition">
-        新建任务
-      </router-link>
+      <div>
+        <button @click="loadTasks" class="text-sm px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition">查询</button>
+        <router-link to="/task/new" class="text-sm px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition ml-2">
+          新建任务
+        </router-link>
+      </div>
     </div>
     <!-- 分类表格 -->
-    <div class="text-sm bg-white/80 border border-slate-200 rounded-lg overflow-hidden shadow-sm">
+    <div class="text-sm bg-white/80 border border-slate-200 rounded-lg overflow-hidden shadow-sm relative">
       <table class="w-full text-center">
         <thead class="bg-slate-50 text-slate-600">
         <tr>
@@ -38,6 +41,7 @@
         </tr>
         </tbody>
       </table>
+      <loading :loading="loading"></loading>
       <div class="px-4 py-3 bg-slate-50 text-sm text-right text-slate-500 border-t border-slate-200">
         共 {{ totalCount }} 条数据
       </div>
@@ -49,6 +53,7 @@
 import { onMounted, ref } from 'vue'
 import type { Task } from '@/types'
 import { deleteTask, fetchTasks } from "@/services/admin.ts";
+import Loading from "@/components/Loading.vue";
 
 const columns = ref<Array<any>>([
   { name: '名称', class: 'text-sm p-4' },
@@ -64,7 +69,7 @@ const totalCount = ref(0)
 const loading = ref(false)
 const error = ref<string | null>(null)
 
-async function loadFloors() {
+async function loadTasks() {
   loading.value = true
   error.value = null
   try {
@@ -89,7 +94,7 @@ async function handleDelete(id: string | number) {
   }
 }
 
-onMounted(loadFloors)
+onMounted(loadTasks)
 </script>
 
 <style scoped>

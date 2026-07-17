@@ -1,3 +1,9 @@
+export interface Response {
+  code: number
+  message: string
+  data: any
+}
+
 export interface Post {
   post_id: number
   title: string

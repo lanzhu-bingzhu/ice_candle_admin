@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import { loginApi } from '@/services/auth'
+import { loginApi, resetPasswordApi } from '@/services/auth'
 import type { LoginParams } from '@/services/auth'
 import router from '@/router'
 
@@ -12,12 +12,22 @@ export const useAuthStore = defineStore('auth', () => {
 
   async function login(params: LoginParams) {
     const result = await loginApi(params)
-    token.value = result.token
-    user.value = result.user
-    localStorage.setItem('admin_token', result.token)
+    if (result.code !== 200) {
+      throw new DOMException(result.message)
+    }
+    token.value = result.data.token
+    user.value = result.data.user
+    localStorage.setItem('admin_token', result.data.token)
     // 如果需要也可以存 user
-    localStorage.setItem('admin_user', JSON.stringify(result.user))
+    localStorage.setItem('admin_user', JSON.stringify(result.data.user))
     router.push('/')
+  }
+
+  async function resetPassword(params: LoginParams) {
+    const result = await resetPasswordApi(params)
+    if (result.code === 200) {
+      logout()
+    }
   }
 
   function logout() {
@@ -38,5 +48,5 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
-  return { token, user, isLoggedIn, login, logout }
+  return { token, user, isLoggedIn, login, logout, resetPassword }
 })

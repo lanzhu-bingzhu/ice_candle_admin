@@ -1,4 +1,5 @@
 import request from './api'
+import type { Response } from "@/types";
 
 export interface LoginParams {
   username: string
@@ -6,11 +7,17 @@ export interface LoginParams {
 }
 
 export interface LoginResult {
-  token: string
-  user: {
-    id: number
-    name: string
+  code: number,
+  message: string,
+  data: {
+    token: string
+    user: {
+      id: number
+      name: string
+    }
   }
 }
 
-export const loginApi = (data: LoginParams) => request.post<any, { data: LoginResult }>('/auth/login', data).then(res => res.data)
+export const loginApi = (data: LoginParams) => request.post<any, LoginResult>('/auth/login', data)
+
+export const resetPasswordApi = (data: LoginParams) => request.post<any, Response>('/user/reset_password', data).then(res => res.data)

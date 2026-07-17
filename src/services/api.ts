@@ -1,4 +1,7 @@
 import axios from 'axios'
+import { useToast } from "@/composables/useToast.ts";
+
+const toast = useToast()
 
 const request = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL || 'http://api.icecandle.com/admin',
@@ -21,6 +24,7 @@ request.interceptors.response.use(
       localStorage.removeItem('admin_user')
       window.location.href = '/login'
     }
+    toast.error(err.response?.data?.message || '请求失败')
     return Promise.reject(err)
   }
 )

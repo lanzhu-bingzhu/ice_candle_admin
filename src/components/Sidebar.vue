@@ -20,5 +20,6 @@ const list: any = ref([
   { name: '分类管理', link: '/category' },
   { name: '楼层管理', link: '/floor' },
   { name: '任务管理', link: '/task' },
+  { name: '系统设置', link: '/setting' },
 ])
 </script>
