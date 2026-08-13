@@ -12,7 +12,7 @@
       <div class="mb-3">
         <label class="w-full p-3 text-left block">父级分类：</label>
         <select v-model="form.parent_id" class="w-full p-2 border border-slate-300 rounded focus:ring-2 focus:ring-blue-400 outline-none">
-          <option :value="null">无（顶级分类）</option>
+          <option :value="0">无（顶级分类）</option>
           <option v-for="cat in availableParents" :key="cat.category_id" :value="cat.category_id">
             {{ cat.name }}
           </option>
