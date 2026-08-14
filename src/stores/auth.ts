@@ -20,7 +20,7 @@ export const useAuthStore = defineStore('auth', () => {
     localStorage.setItem('admin_token', result.data.token)
     // 如果需要也可以存 user
     localStorage.setItem('admin_user', JSON.stringify(result.data.user))
-    router.push('/')
+    await router.push('/')
   }
 
   async function resetPassword(params: LoginParams) {

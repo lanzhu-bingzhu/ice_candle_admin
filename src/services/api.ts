@@ -1,7 +1,5 @@
 import axios from 'axios'
-import { useToast } from "@/composables/useToast.ts";
-
-const toast = useToast()
+import { toast } from "@/composables/useToast.ts";
 
 const request = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL || 'http://api.icecandle.com/admin',

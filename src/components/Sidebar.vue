@@ -3,7 +3,7 @@
     <div class="p-6 text-2xl font-bold text-cyan-400">IceCandleAdmin</div>
     <nav class="flex-1 px-4 space-y-1">
       <router-link v-for="item in list" :to="item.link" custom v-slot="{ navigate, isActive }">
-        <button @click="navigate" :class="['flex text-sm items-center gap-2 w-full px-4 py-2 rounded transition', isActive ? 'bg-blue-500/20 text-blue-300' : 'hover:bg-white/10 text-slate-300']">
+        <button @click="navigate" :class="['flex text-sm items-center gap-2 w-full px-4 py-2 rounded transition', isActive ? 'bg-ice-500/20 text-ice-300' : 'hover:bg-white/10 text-slate-300']">
           {{ item.name }}
         </button>
       </router-link>

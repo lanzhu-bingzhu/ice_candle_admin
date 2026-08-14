@@ -6,12 +6,12 @@
       <!-- 分类名称 -->
       <div class="mb-3">
         <label class="w-full p-3 text-left block">分类名称：</label>
-        <input v-model="form.name" class="w-full p-2 border border-slate-300 rounded focus:ring-2 focus:ring-blue-400 outline-none" placeholder="输入分类名称"/>
+        <input v-model="form.name" class="w-full p-2 border border-slate-300 rounded focus:ring-2 focus:ring-ice-400 outline-none" placeholder="输入分类名称"/>
       </div>
       <!-- 父级分类 -->
       <div class="mb-3">
         <label class="w-full p-3 text-left block">父级分类：</label>
-        <select v-model="form.parent_id" class="w-full p-2 border border-slate-300 rounded focus:ring-2 focus:ring-blue-400 outline-none">
+        <select v-model="form.parent_id" class="w-full p-2 border border-slate-300 rounded focus:ring-2 focus:ring-ice-400 outline-none">
           <option :value="0">无（顶级分类）</option>
           <option v-for="cat in availableParents" :key="cat.category_id" :value="cat.category_id">
             {{ cat.name }}
@@ -21,7 +21,7 @@
       <!-- 类型 -->
       <div class="mb-3">
         <label class="w-full p-3 text-left block">类型：</label>
-        <select v-model="form.type_id" class="w-full p-2 border border-slate-300 rounded focus:ring-2 focus:ring-blue-400 outline-none">
+        <select v-model="form.type_id" class="w-full p-2 border border-slate-300 rounded focus:ring-2 focus:ring-ice-400 outline-none">
           <option :value="1">分类</option>
           <option :value="2">文章</option>
           <option :value="3">图文</option>
@@ -33,7 +33,7 @@
         <textarea
             v-model="form.description"
             rows="3"
-            class="w-full p-2 border border-slate-300 rounded focus:ring-2 focus:ring-blue-400 outline-none"
+            class="w-full p-2 border border-slate-300 rounded focus:ring-2 focus:ring-ice-400 outline-none"
             placeholder="简要描述该分类"
         ></textarea>
       </div>
@@ -52,7 +52,7 @@
       </div>
       <!-- 操作按钮 -->
       <div class="flex gap-4">
-        <button @click="save" class="px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition">保存</button>
+        <button @click="save" class="px-6 py-2 bg-ice-500 text-white rounded hover:bg-ice-600 transition">保存</button>
         <router-link to="/category" class="px-6 py-2 border border-slate-300 rounded hover:bg-slate-50 transition">取消</router-link>
       </div>
     </div>
@@ -71,6 +71,7 @@ import {
 } from '@/services/admin'
 import type { Category } from '@/types'
 import Loading from "@/components/Loading.vue";
+import { toast } from "@/composables/useToast.ts";
 
 const route = useRoute()
 const router = useRouter()
@@ -99,47 +100,47 @@ const availableParents = computed(() => {
 })
 
 async function loadData() {
-  try {
-    saving.value = true
-    const data = await fetchAllCategories()
-    allCategories.value = data.items.filter(item => item.parent_id == 0)
+  saving.value = true
+  await fetchAllCategories().then(res => {
+    allCategories.value = res.data.items.filter(item => item.parent_id == 0)
     if (isEdit.value) {
-      const cat = await fetchCategoryById(route.params.category_id as string)
-      if (cat) {
-        form.name = cat.name
-        form.parent_id = cat.parent_id
-        form.type_id = cat.type_id
-        form.description = cat.description
-        form.is_show = cat.is_show
-      }
+      fetchCategoryById(route.params.category_id as string).then(res => {
+        if (res.data) {
+          form.name = res.data.name
+          form.parent_id = res.data.parent_id
+          form.type_id = res.data.type_id
+          form.description = res.data.description
+          form.is_show = res.data.is_show
+        }
+      })
     }
     saving.value = false
-  } catch (e: any) {
-    alert('加载分类数据失败')
+  }).catch(_e => {
+    toast.error('加载分类数据失败')
     saving.value = false
-  }
+  })
 }
 
 async function save() {
-  if (!form.name.trim()) {
-    alert('请输入分类名称')
-    return
+  saving.value = true
+
+  const payload = { ...form }
+  if (isEdit.value) {
+    await updateCategory(route.params.category_id as string, payload).then(_res => {
+      toast.success('编辑成功')
+    }).catch(_e => {
+      toast.error('编辑失败')
+    })
+  } else {
+    await createCategory(payload).then(res => {
+      toast.success('添加成功')
+      router.push(`/category/${res.data}/edit`)
+    }).catch(_e => {
+      toast.error('添加失败')
+    })
   }
 
-  saving.value = true
-  try {
-    const payload = { ...form }
-    if (isEdit.value) {
-      await updateCategory(route.params.category_id as string, payload)
-    } else {
-      const result = await createCategory(payload)
-      router.push(`/category/${result}/edit`)
-    }
-  } catch (e: any) {
-    alert('保存失败：' + (e.message || '未知错误'))
-  } finally {
-    saving.value = false
-  }
+  saving.value = false
 }
 
 onMounted(loadData)

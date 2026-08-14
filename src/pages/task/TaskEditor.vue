@@ -5,19 +5,19 @@
       <div class="mb-3">
         <label>
           <span class="w-full p-3 text-left block">任务名：</span>
-          <input v-model="form.name" class="w-full p-2 border border-slate-300 rounded focus:ring-2 focus:ring-blue-400 outline-none" placeholder="任务名" />
+          <input v-model="form.name" class="w-full p-2 border border-slate-300 rounded focus:ring-2 focus:ring-ice-400 outline-none" placeholder="任务名" />
         </label>
       </div>
       <div class="mb-3">
         <label>
           <span class="w-full p-3 text-left block">任务标题：</span>
-          <input v-model="form.title" class="w-full p-2 border border-slate-300 rounded focus:ring-2 focus:ring-blue-400 outline-none" placeholder="任务标题" />
+          <input v-model="form.title" class="w-full p-2 border border-slate-300 rounded focus:ring-2 focus:ring-ice-400 outline-none" placeholder="任务标题" />
         </label>
       </div>
       <div class="mb-3">
         <label>
           <span class="w-full p-3 text-left block">结束日期：</span>
-          <input v-model="form.deadline" type="datetime-local" class="w-full p-2 border border-slate-300 rounded focus:ring-2 focus:ring-blue-400 outline-none" placeholder="结束日期" />
+          <input v-model="form.deadline" type="datetime-local" class="w-full p-2 border border-slate-300 rounded focus:ring-2 focus:ring-ice-400 outline-none" placeholder="结束日期" />
         </label>
       </div>
       <div class="mb-3">
@@ -31,7 +31,7 @@
         <div class="bg-slate-50 rounded p-4 border border-slate-200 space-y-3">
           <div class="flex flex-wrap items-center gap-3">
             <input ref="fileInput" type="file" accept="image/*" @change="handleFileChange" class="text-sm" />
-            <button @click="uploadFile" :disabled="!selectedFile || uploading" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:opacity-50 transition text-sm">
+            <button @click="uploadFile" :disabled="!selectedFile || uploading" class="px-4 py-2 bg-ice-500 text-white rounded hover:bg-ice-600 disabled:opacity-50 transition text-sm">
               {{ uploading ? '上传中...' : '上传图片' }}
             </button>
             <span v-if="uploadError" class="text-red-500 text-sm">{{ uploadError }}</span>
@@ -61,7 +61,7 @@
       <div class="mb-3">
         <span class="w-full p-3 text-left block">
           子任务项：
-          <button @click="addTaskNode" class="px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:opacity-50 transition text-xs">
+          <button @click="addTaskNode" class="px-2 py-1 bg-ice-500 text-white rounded hover:bg-ice-600 disabled:opacity-50 transition text-xs">
             添加
           </button>
         </span>
@@ -79,13 +79,13 @@
               <div class="mb-3">
                 <label>
                   <span class="w-full p-3 text-left block">子任务标题：</span>
-                  <input v-model="form.task_nodes[index].title" class="w-full p-2 border border-slate-300 rounded focus:ring-2 focus:ring-blue-400 outline-none" placeholder="子任务标题" />
+                  <input v-model="form.task_nodes[index].title" class="w-full p-2 border border-slate-300 rounded focus:ring-2 focus:ring-ice-400 outline-none" placeholder="子任务标题" />
                 </label>
               </div>
               <div class="mb-3">
                 <label>
                   <span class="w-full p-3 text-left block">子任务描述：</span>
-                  <input v-model="form.task_nodes[index].description" class="w-full p-2 border border-slate-300 rounded focus:ring-2 focus:ring-blue-400 outline-none" placeholder="子任务描述" />
+                  <input v-model="form.task_nodes[index].description" class="w-full p-2 border border-slate-300 rounded focus:ring-2 focus:ring-ice-400 outline-none" placeholder="子任务描述" />
                 </label>
               </div>
               <div class="mb-3">
@@ -113,7 +113,7 @@
               <div class="mb-3">
                 <label>
                   <span class="w-full p-3 text-left block">子任务完成时间：</span>
-                  <input v-model="form.task_nodes[index].completed_at" type="datetime-local" class="w-full p-2 border border-slate-300 rounded focus:ring-2 focus:ring-blue-400 outline-none" placeholder="子任务完成时间" />
+                  <input v-model="form.task_nodes[index].completed_at" type="datetime-local" class="w-full p-2 border border-slate-300 rounded focus:ring-2 focus:ring-ice-400 outline-none" placeholder="子任务完成时间" />
                 </label>
               </div>
               <div class="mb-3">
@@ -122,7 +122,7 @@
                   <div class="mb-3">
                     <label>
                       <span class="w-full p-3 text-left block">文本：</span>
-                      <input v-model="form.task_nodes[index].result.text" class="w-full p-2 border border-slate-300 rounded focus:ring-2 focus:ring-blue-400 outline-none" placeholder="文本" />
+                      <input v-model="form.task_nodes[index].result.text" class="w-full p-2 border border-slate-300 rounded focus:ring-2 focus:ring-ice-400 outline-none" placeholder="文本" />
                     </label>
                   </div>
                   <div class="mb-3">
@@ -130,7 +130,7 @@
                     <div class="bg-slate-50 rounded p-4 border border-slate-200 space-y-3">
                       <div class="flex flex-wrap items-center gap-3">
                         <input ref="fileInput" type="file" accept="image/*" @change="handleResultFileChange" class="text-sm" />
-                        <button @click="uploadResultFile(index)" :disabled="!selectedResultFile || uploadingResult" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:opacity-50 transition text-sm">
+                        <button @click="uploadResultFile(index)" :disabled="!selectedResultFile || uploadingResult" class="px-4 py-2 bg-ice-500 text-white rounded hover:bg-ice-600 disabled:opacity-50 transition text-sm">
                           {{ uploadingResult ? '上传中...' : '上传图片' }}
                         </button>
                         <span v-if="uploadResultError" class="text-red-500 text-sm">{{ uploadError }}</span>
@@ -154,7 +154,7 @@
       </div>
 
       <div class="flex gap-4">
-        <button @click="save" class="px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition">保存</button>
+        <button @click="save" class="px-6 py-2 bg-ice-500 text-white rounded hover:bg-ice-600 transition">保存</button>
         <router-link to="/task" class="px-6 py-2 border border-slate-300 rounded hover:bg-slate-50 transition">取消</router-link>
       </div>
     </div>
@@ -169,6 +169,7 @@ import { createTask, fetchTaskById, updateTask } from "@/services/admin.ts";
 import TiptapEditor from '@/components/TiptapEditor.vue'
 import { uploadImage } from "@/services/upload.ts";
 import Loading from "@/components/Loading.vue";
+import { toast } from "@/composables/useToast.ts";
 
 const route = useRoute()
 const router = useRouter()
@@ -223,16 +224,18 @@ onMounted(loadData)
 async function loadData() {
   saving.value = true
   if (isEdit.value) {
-    const task = await fetchTaskById(route.params.task_id as string)
-    if (task) {
-      form.name = task.name
-      form.title = task.title
-      form.overall_description = task.overall_description
-      form.header_image = task.header_image
-      form.deadline = task.deadline
-      form.task_nodes = task.task_nodes
-      form.is_show = task.is_show
-    }
+    await fetchTaskById(route.params.task_id as string).then(res => {
+      const task = res.data
+      if (task) {
+        form.name = task.name
+        form.title = task.title
+        form.overall_description = task.overall_description
+        form.header_image = task.header_image
+        form.deadline = task.deadline
+        form.task_nodes = task.task_nodes
+        form.is_show = task.is_show
+      }
+    })
   }
   saving.value = false
 }
@@ -265,36 +268,40 @@ async function uploadFile() {
   if (!selectedFile.value) return
   uploading.value = true
   uploadError.value = ''
-  try {
-    const result = await uploadImage(selectedFile.value)
+
+  await uploadImage(selectedFile.value).then(res => {
+    const result = res.data
     uploadedUrl.value = result.url
     form.header_image = result.url
     // 清空文件选择
     if (fileInput.value) fileInput.value.value = ''
     selectedFile.value = null
-  } catch (e: any) {
+  }).catch(e => {
     uploadError.value = e.message || '上传失败'
-  } finally {
+    toast.error(uploadError.value)
+  }).finally(() => {
     uploading.value = false
-  }
+  })
 }
 
 async function uploadResultFile(i: number) {
   if (!selectedResultFile.value) return
   uploadingResult.value = true
   uploadResultError.value = ''
-  try {
-    const result = await uploadImage(selectedResultFile.value)
+
+  await uploadImage(selectedResultFile.value).then(res => {
+    const result = res.data
     uploadedResultUrl.value = result.url
     form.task_nodes[i].result.images.push(result.url)
     // 清空文件选择
     if (fileResultInput.value) fileResultInput.value.value = ''
     selectedResultFile.value = null
-  } catch (e: any) {
+  }).catch(e => {
     uploadResultError.value = e.message || '上传失败'
-  } finally {
+    toast.error(uploadResultError.value)
+  }).finally(() => {
     uploadingResult.value = false
-  }
+  })
 }
 
 async function addTaskNode() {
@@ -315,14 +322,22 @@ async function deleteTaskNode(index: number) {
   form.task_nodes = form.task_nodes.filter((_item, index2) => index !== index2)
 }
 
-const save = async () => {
+async function save() {
   const payload = { ...form }
   saving.value = true
   if (isEdit.value) {
-    await updateTask(route.params.task_id as string, payload)
+    await updateTask(route.params.task_id as string, payload).then(_res => {
+      toast.success('编辑成功')
+    }).catch(_e => {
+      toast.error('编辑失败')
+    })
   } else {
-    const result = await createTask(payload)
-    router.push(`/task/${result}/edit`)
+    await createTask(payload).then(res => {
+      toast.success('添加成功')
+      router.push(`/task/${res.data}/edit`)
+    }).catch(_e => {
+      toast.error('添加失败')
+    })
   }
   saving.value = false
 }

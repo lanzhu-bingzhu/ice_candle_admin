@@ -3,7 +3,7 @@
     <div class="flex justify-between items-center">
       <h2 class="text-xl font-bold text-slate-800">文章管理</h2>
       <div>
-        <button @click="loadPosts" class="text-sm px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition">查询</button>
+        <button @click="loadPosts" class="text-sm px-4 py-2 bg-ice-500 text-white rounded hover:bg-ice-600 transition">查询</button>
         <router-link to="/post/new" class="text-sm px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition ml-2">
           新建文章
         </router-link>
@@ -26,7 +26,7 @@
           <td class="p-4 font-medium">{{ post.title }}</td>
           <td class="p-4 hidden sm:table-cell">
               <span class="text-xs px-2 py-0.5 rounded-full"
-                    :class="post.type_id === 2 ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700'">
+                    :class="post.type_id === 2 ? 'bg-purple-100 text-purple-700' : 'bg-ice-100 text-ice-700'">
                 {{ post.type_id === 2 ? '图文' : '文章' }}
               </span>
           </td>
@@ -37,7 +37,7 @@
           </td>
           <td class="p-4 hidden lg:table-cell text-slate-500">{{ post.created_at }}</td>
           <td class="p-4 space-x-2">
-            <router-link :to="`/post/${post.post_id}/edit`" class="text-blue-500 hover:underline">编辑</router-link>
+            <router-link :to="`/post/${post.post_id}/edit`" class="text-ice-500 hover:underline">编辑</router-link>
             <button @click="handleDelete(post.post_id)" class="text-red-400 hover:underline">删除</button>
           </td>
         </tr>
@@ -68,26 +68,24 @@ const error = ref<string | null>(null)
 async function loadPosts() {
   loading.value = true
   error.value = null
-  try {
-    const data = await fetchPosts()
-    posts.value = data.items
-    totalCount.value = data.count
-  } catch (e: any) {
+  await fetchPosts().then(res => {
+    posts.value = res.data.items
+    totalCount.value = res.data.count
+  }).catch(e => {
     error.value = e.message || '加载文章失败'
-  } finally {
+  }).finally(() => {
     loading.value = false
-  }
+  })
 }
 
 async function handleDelete(postId: string | number) {
   if (!confirm('确定删除这篇文章吗？')) return
-  try {
-    await apiDelete(String(postId))
+  await apiDelete(String(postId)).then(_res => {
     posts.value = posts.value.filter(p => p.post_id !== postId)
     totalCount.value--
-  } catch (e: any) {
+  }).catch(e => {
     alert('删除失败：' + (e.message || '未知错误'))
-  }
+  })
 }
 
 onMounted(loadPosts)

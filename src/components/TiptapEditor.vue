@@ -6,86 +6,86 @@
     <!-- 工具栏 -->
     <div
         v-if="editor"
-        class="flex flex-wrap items-center gap-1 p-2 border-b border-slate-200 bg-gradient-to-r from-slate-50 to-blue-50/30"
+        class="flex flex-wrap items-center gap-1 p-2 border-b border-slate-200 bg-gradient-to-r from-slate-50 to-ice-50/30"
     >
       <!-- 文本格式 -->
       <div class="flex items-center gap-0.5">
         <button
             @click="editor.chain().focus().toggleBold().run()"
-            class="px-2 py-1 text-xs rounded hover:bg-blue-100 transition-colors cursor-pointer border border-transparent"
-            :class="{ 'bg-blue-200 border-blue-300': editor.isActive('bold') }"
+            class="px-2 py-1 text-xs rounded hover:bg-ice-100 transition-colors cursor-pointer border border-transparent"
+            :class="{ 'bg-ice-200 border-ice-300': editor.isActive('bold') }"
             title="加粗"
         >
           <b>B</b>
         </button>
         <button
             @click="editor.chain().focus().toggleItalic().run()"
-            class="px-2 py-1 text-xs rounded hover:bg-blue-100 transition-colors cursor-pointer border border-transparent italic"
-            :class="{ 'bg-blue-200 border-blue-300': editor.isActive('italic') }"
+            class="px-2 py-1 text-xs rounded hover:bg-ice-100 transition-colors cursor-pointer border border-transparent italic"
+            :class="{ 'bg-ice-200 border-ice-300': editor.isActive('italic') }"
             title="斜体"
         >
           I
         </button>
         <button
             @click="editor.chain().focus().toggleUnderline().run()"
-            class="px-2 py-1 text-xs rounded hover:bg-blue-100 transition-colors cursor-pointer border border-transparent underline"
-            :class="{ 'bg-blue-200 border-blue-300': editor.isActive('underline') }"
+            class="px-2 py-1 text-xs rounded hover:bg-ice-100 transition-colors cursor-pointer border border-transparent underline"
+            :class="{ 'bg-ice-200 border-ice-300': editor.isActive('underline') }"
             title="下划线"
         >
           U
         </button>
         <button
             @click="editor.chain().focus().toggleStrike().run()"
-            class="px-2 py-1 text-xs rounded hover:bg-blue-100 transition-colors cursor-pointer border border-transparent line-through"
-            :class="{ 'bg-blue-200 border-blue-300': editor.isActive('strike') }"
+            class="px-2 py-1 text-xs rounded hover:bg-ice-100 transition-colors cursor-pointer border border-transparent line-through"
+            :class="{ 'bg-ice-200 border-ice-300': editor.isActive('strike') }"
             title="删除线"
         >
           S
         </button>
         <button
             @click="editor.chain().focus().toggleSubscript().run()"
-            class="px-2 py-1 text-xs rounded hover:bg-blue-100 transition-colors cursor-pointer border border-transparent"
-            :class="{ 'bg-blue-200 border-blue-300': editor.isActive('subscript') }"
+            class="px-2 py-1 text-xs rounded hover:bg-ice-100 transition-colors cursor-pointer border border-transparent"
+            :class="{ 'bg-ice-200 border-ice-300': editor.isActive('subscript') }"
             title="下标"
         >
           x₂
         </button>
         <button
             @click="editor.chain().focus().toggleSuperscript().run()"
-            class="px-2 py-1 text-xs rounded hover:bg-blue-100 transition-colors cursor-pointer border border-transparent"
-            :class="{ 'bg-blue-200 border-blue-300': editor.isActive('superscript') }"
+            class="px-2 py-1 text-xs rounded hover:bg-ice-100 transition-colors cursor-pointer border border-transparent"
+            :class="{ 'bg-ice-200 border-ice-300': editor.isActive('superscript') }"
             title="上标"
         >
           x²
         </button>
         <button
             @click="editor.chain().focus().toggleHeading({ level: 1 }).run()"
-            class="px-2 py-1 text-xs rounded hover:bg-blue-100 transition-colors cursor-pointer border border-transparent"
-            :class="{ 'bg-blue-200 border-blue-300': editor.isActive('heading', { level: 1 }) }"
+            class="px-2 py-1 text-xs rounded hover:bg-ice-100 transition-colors cursor-pointer border border-transparent"
+            :class="{ 'bg-ice-200 border-ice-300': editor.isActive('heading', { level: 1 }) }"
             title="H1"
         >
           H1
         </button>
         <button
             @click="editor.chain().focus().toggleHeading({ level: 2 }).run()"
-            class="px-2 py-1 text-xs rounded hover:bg-blue-100 transition-colors cursor-pointer border border-transparent"
-            :class="{ 'bg-blue-200 border-blue-300': editor.isActive('heading', { level: 2 }) }"
+            class="px-2 py-1 text-xs rounded hover:bg-ice-100 transition-colors cursor-pointer border border-transparent"
+            :class="{ 'bg-ice-200 border-ice-300': editor.isActive('heading', { level: 2 }) }"
             title="H2"
         >
           H2
         </button>
         <button
             @click="editor.chain().focus().toggleHeading({ level: 3 }).run()"
-            class="px-2 py-1 text-xs rounded hover:bg-blue-100 transition-colors cursor-pointer border border-transparent"
-            :class="{ 'bg-blue-200 border-blue-300': editor.isActive('heading', { level: 3 }) }"
+            class="px-2 py-1 text-xs rounded hover:bg-ice-100 transition-colors cursor-pointer border border-transparent"
+            :class="{ 'bg-ice-200 border-ice-300': editor.isActive('heading', { level: 3 }) }"
             title="H3"
         >
           H3
         </button>
         <button
             @click="editor.chain().focus().toggleHeading({ level: 4 }).run()"
-            class="px-2 py-1 text-xs rounded hover:bg-blue-100 transition-colors cursor-pointer border border-transparent"
-            :class="{ 'bg-blue-200 border-blue-300': editor.isActive('heading', { level: 4 }) }"
+            class="px-2 py-1 text-xs rounded hover:bg-ice-100 transition-colors cursor-pointer border border-transparent"
+            :class="{ 'bg-ice-200 border-ice-300': editor.isActive('heading', { level: 4 }) }"
             title="H4"
         >
           H4
@@ -120,32 +120,32 @@
       <div class="flex items-center gap-0.5">
         <button
             @click="editor.chain().focus().setTextAlign('left').run()"
-            class="px-2 py-1 text-xs rounded hover:bg-blue-100 transition-colors cursor-pointer border border-transparent"
-            :class="{ 'bg-blue-200 border-blue-300': editor.isActive({ textAlign: 'left' }) }"
+            class="px-2 py-1 text-xs rounded hover:bg-ice-100 transition-colors cursor-pointer border border-transparent"
+            :class="{ 'bg-ice-200 border-ice-300': editor.isActive({ textAlign: 'left' }) }"
             title="左对齐"
         >
           <bars3-bottom-left-icon class="w-4 h-4" />
         </button>
         <button
             @click="editor.chain().focus().setTextAlign('center').run()"
-            class="px-2 py-1 text-xs rounded hover:bg-blue-100 transition-colors cursor-pointer border border-transparent"
-            :class="{ 'bg-blue-200 border-blue-300': editor.isActive({ textAlign: 'center' }) }"
+            class="px-2 py-1 text-xs rounded hover:bg-ice-100 transition-colors cursor-pointer border border-transparent"
+            :class="{ 'bg-ice-200 border-ice-300': editor.isActive({ textAlign: 'center' }) }"
             title="居中"
         >
           <bars3-icon class="w-4 h-4" />
         </button>
         <button
             @click="editor.chain().focus().setTextAlign('right').run()"
-            class="px-2 py-1 text-xs rounded hover:bg-blue-100 transition-colors cursor-pointer border border-transparent"
-            :class="{ 'bg-blue-200 border-blue-300': editor.isActive({ textAlign: 'right' }) }"
+            class="px-2 py-1 text-xs rounded hover:bg-ice-100 transition-colors cursor-pointer border border-transparent"
+            :class="{ 'bg-ice-200 border-ice-300': editor.isActive({ textAlign: 'right' }) }"
             title="右对齐"
         >
           <bars3-bottom-right-icon class="w-4 h-4" />
         </button>
         <button
             @click="editor.chain().focus().setTextAlign('justify').run()"
-            class="px-2 py-1 text-xs rounded hover:bg-blue-100 transition-colors cursor-pointer border border-transparent"
-            :class="{ 'bg-blue-200 border-blue-300': editor.isActive({ textAlign: 'justify' }) }"
+            class="px-2 py-1 text-xs rounded hover:bg-ice-100 transition-colors cursor-pointer border border-transparent"
+            :class="{ 'bg-ice-200 border-ice-300': editor.isActive({ textAlign: 'justify' }) }"
             title="两端对齐"
         >
           <bars4-icon class="w-4 h-4" />
@@ -165,31 +165,31 @@
       <div class="flex items-center gap-0.5">
         <button
             @click="editor.chain().focus().toggleBulletList().run()"
-            class="px-2 py-1 text-xs rounded hover:bg-blue-100 transition-colors cursor-pointer border border-transparent"
-            :class="{ 'bg-blue-200 border-blue-300': editor.isActive('bulletList') }"
+            class="px-2 py-1 text-xs rounded hover:bg-ice-100 transition-colors cursor-pointer border border-transparent"
+            :class="{ 'bg-ice-200 border-ice-300': editor.isActive('bulletList') }"
             title="无序列表"
         >
           •
         </button>
         <button
             @click="editor.chain().focus().toggleOrderedList().run()"
-            class="px-2 py-1 text-xs rounded hover:bg-blue-100 transition-colors cursor-pointer border border-transparent"
-            :class="{ 'bg-blue-200 border-blue-300': editor.isActive('orderedList') }"
+            class="px-2 py-1 text-xs rounded hover:bg-ice-100 transition-colors cursor-pointer border border-transparent"
+            :class="{ 'bg-ice-200 border-ice-300': editor.isActive('orderedList') }"
             title="有序列表"
         >
           1.
         </button>
         <button
             @click="editor.chain().focus().toggleBlockquote().run()"
-            class="px-2 py-1 text-xs rounded hover:bg-blue-100 transition-colors cursor-pointer border border-transparent"
-            :class="{ 'bg-blue-200 border-blue-300': editor.isActive('blockquote') }"
+            class="px-2 py-1 text-xs rounded hover:bg-ice-100 transition-colors cursor-pointer border border-transparent"
+            :class="{ 'bg-ice-200 border-ice-300': editor.isActive('blockquote') }"
             title="引用"
         >
           ❝
         </button>
         <button
             @click="editor.chain().focus().setHorizontalRule().run()"
-            class="px-2 py-1 text-xs rounded hover:bg-blue-100 transition-colors cursor-pointer border border-transparent"
+            class="px-2 py-1 text-xs rounded hover:bg-ice-100 transition-colors cursor-pointer border border-transparent"
             title="分割线"
         >
           —
@@ -200,9 +200,9 @@
 
       <!-- 链接与媒体 -->
       <div class="flex items-center gap-0.5">
-        <button @click="setLink" class="px-2 py-1 text-xs rounded hover:bg-blue-100 transition-colors cursor-pointer border border-transparent" title="插入链接">🔗</button>
-        <button @click="addImage" class="px-2 py-1 text-xs rounded hover:bg-blue-100 transition-colors cursor-pointer border border-transparent" title="插入图片">🖼️</button>
-<!--        <button @click="addVideo" class="px-2 py-1 text-xs rounded hover:bg-blue-100 transition-colors cursor-pointer border border-transparent" title="插入视频">🎬</button>-->
+        <button @click="setLink" class="px-2 py-1 text-xs rounded hover:bg-ice-100 transition-colors cursor-pointer border border-transparent" title="插入链接">🔗</button>
+        <button @click="addImage" class="px-2 py-1 text-xs rounded hover:bg-ice-100 transition-colors cursor-pointer border border-transparent" title="插入图片">🖼️</button>
+<!--        <button @click="addVideo" class="px-2 py-1 text-xs rounded hover:bg-ice-100 transition-colors cursor-pointer border border-transparent" title="插入视频">🎬</button>-->
       </div>
 
       <div class="w-px h-6 bg-slate-300 mx-1"></div>
@@ -211,49 +211,49 @@
       <div class="flex items-center gap-0.5">
         <button
             @click="editor.chain().focus().insertTable({ rows: 3, cols: 3 }).run()"
-            class="px-2 py-1 text-xs rounded hover:bg-blue-100 transition-colors cursor-pointer border border-transparent"
+            class="px-2 py-1 text-xs rounded hover:bg-ice-100 transition-colors cursor-pointer border border-transparent"
             title="插入表格"
         >
           ⊞
         </button>
         <button
             @click="editor.chain().focus().addColumnBefore().run()"
-            class="px-2 py-1 text-xs rounded hover:bg-blue-100 transition-colors cursor-pointer border border-transparent"
+            class="px-2 py-1 text-xs rounded hover:bg-ice-100 transition-colors cursor-pointer border border-transparent"
             title="前插列"
         >
           ◀|
         </button>
         <button
             @click="editor.chain().focus().addColumnAfter().run()"
-            class="px-2 py-1 text-xs rounded hover:bg-blue-100 transition-colors cursor-pointer border border-transparent"
+            class="px-2 py-1 text-xs rounded hover:bg-ice-100 transition-colors cursor-pointer border border-transparent"
             title="后插列"
         >
           |▶
         </button>
         <button
             @click="editor.chain().focus().addRowBefore().run()"
-            class="px-2 py-1 text-xs rounded hover:bg-blue-100 transition-colors cursor-pointer border border-transparent"
+            class="px-2 py-1 text-xs rounded hover:bg-ice-100 transition-colors cursor-pointer border border-transparent"
             title="前插行"
         >
           ▲
         </button>
         <button
             @click="editor.chain().focus().addRowAfter().run()"
-            class="px-2 py-1 text-xs rounded hover:bg-blue-100 transition-colors cursor-pointer border border-transparent"
+            class="px-2 py-1 text-xs rounded hover:bg-ice-100 transition-colors cursor-pointer border border-transparent"
             title="后插行"
         >
           ▼
         </button>
         <button
             @click="editor.chain().focus().deleteRow().run()"
-            class="px-2 py-1 text-xs rounded hover:bg-blue-100 transition-colors cursor-pointer border border-transparent"
+            class="px-2 py-1 text-xs rounded hover:bg-ice-100 transition-colors cursor-pointer border border-transparent"
             title="删除行"
         >
           ✕
         </button>
         <button
             @click="editor.chain().focus().deleteColumn().run()"
-            class="px-2 py-1 text-xs rounded hover:bg-blue-100 transition-colors cursor-pointer border border-transparent"
+            class="px-2 py-1 text-xs rounded hover:bg-ice-100 transition-colors cursor-pointer border border-transparent"
             title="删除列"
         >
           ✕
@@ -266,15 +266,15 @@
       <div class="flex items-center gap-0.5">
         <button
             @click="editor.chain().focus().toggleCodeBlock().run()"
-            class="px-2 py-1 text-xs rounded hover:bg-blue-100 transition-colors cursor-pointer border border-transparent"
-            :class="{ 'bg-blue-200 border-blue-300': editor.isActive('codeBlock') }"
+            class="px-2 py-1 text-xs rounded hover:bg-ice-100 transition-colors cursor-pointer border border-transparent"
+            :class="{ 'bg-ice-200 border-ice-300': editor.isActive('codeBlock') }"
             title="代码块"
         >
           &lt;/&gt;
         </button>
         <button
             @click="toggleMath"
-            class="px-2 py-1 text-xs rounded hover:bg-blue-100 transition-colors cursor-pointer border border-transparent"
+            class="px-2 py-1 text-xs rounded hover:bg-ice-100 transition-colors cursor-pointer border border-transparent"
             title="公式"
         >
           √
@@ -285,13 +285,13 @@
 
       <!-- 撤销/重做 -->
       <div class="flex items-center gap-0.5">
-        <button @click="editor.chain().focus().undo().run()" class="px-2 py-1 text-xs rounded hover:bg-blue-100 transition-colors cursor-pointer border border-transparent" title="撤销">↩</button>
-        <button @click="editor.chain().focus().redo().run()" class="px-2 py-1 text-xs rounded hover:bg-blue-100 transition-colors cursor-pointer border border-transparent" title="重做">↪</button>
+        <button @click="editor.chain().focus().undo().run()" class="px-2 py-1 text-xs rounded hover:bg-ice-100 transition-colors cursor-pointer border border-transparent" title="撤销">↩</button>
+        <button @click="editor.chain().focus().redo().run()" class="px-2 py-1 text-xs rounded hover:bg-ice-100 transition-colors cursor-pointer border border-transparent" title="重做">↪</button>
       </div>
 
       <div class="ml-auto flex items-center gap-1">
-        <button @click="toggleSourceCode" class="px-2 py-1 text-xs rounded hover:bg-blue-100 transition-colors cursor-pointer border border-transparent" title="源码">HTML</button>
-        <button @click="toggleFullscreen" class="px-2 py-1 text-xs rounded hover:bg-blue-100 transition-colors cursor-pointer border border-transparent" title="全屏">⛶</button>
+        <button @click="toggleSourceCode" class="px-2 py-1 text-xs rounded hover:bg-ice-100 transition-colors cursor-pointer border border-transparent" title="源码">HTML</button>
+        <button @click="toggleFullscreen" class="px-2 py-1 text-xs rounded hover:bg-ice-100 transition-colors cursor-pointer border border-transparent" title="全屏">⛶</button>
       </div>
     </div>
 
@@ -378,7 +378,7 @@ const editor = useEditor({
     FontSize,
     LineHeight,
     FontFamily.configure({ types: ['textStyle'] }),
-    Link.configure({ openOnClick: false, HTMLAttributes: { class: 'text-blue-500 underline' } }),
+    Link.configure({ openOnClick: false, HTMLAttributes: { class: 'text-ice-500 underline' } }),
     ImageExt.configure({ inline: true }),
     Youtube.configure({ controls: true }),
     Table.configure({ resizable: true }),

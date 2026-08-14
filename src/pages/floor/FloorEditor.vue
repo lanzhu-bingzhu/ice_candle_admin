@@ -21,7 +21,7 @@
       <div class="mb-3">
         <label>
           <span class="w-full p-3 text-left block">排序：</span>
-          <input v-model="form.sort" type="number" class="w-full p-2 border border-slate-300 rounded focus:ring-2 focus:ring-blue-400 outline-none" placeholder="排序" />
+          <input v-model="form.sort" type="number" class="w-full p-2 border border-slate-300 rounded focus:ring-2 focus:ring-ice-400 outline-none" placeholder="排序" />
         </label>
       </div>
       <div class="mb-3">
@@ -44,7 +44,7 @@
           <div class="bg-slate-50 rounded p-4 border border-slate-200 space-y-3">
             <div class="flex flex-wrap items-center gap-3">
               <input ref="fileInput" type="file" accept="image/*" @change="handleFileChange" class="text-sm" />
-              <button @click="uploadFile" :disabled="!selectedFile || uploading" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:opacity-50 transition text-sm">
+              <button @click="uploadFile" :disabled="!selectedFile || uploading" class="px-4 py-2 bg-ice-500 text-white rounded hover:bg-ice-600 disabled:opacity-50 transition text-sm">
                 {{ uploading ? '上传中...' : '上传图片' }}
               </button>
               <span v-if="uploadError" class="text-red-500 text-sm">{{ uploadError }}</span>
@@ -59,13 +59,13 @@
         <div class="mb-3">
           <label>
             <span class="w-full p-3 text-left block">链接：</span>
-            <input v-model="form.link" class="w-full p-2 border border-slate-300 rounded focus:ring-2 focus:ring-blue-400 outline-none" placeholder="楼层链接" />
+            <input v-model="form.link" class="w-full p-2 border border-slate-300 rounded focus:ring-2 focus:ring-ice-400 outline-none" placeholder="楼层链接" />
           </label>
         </div>
         <div class="mb-3">
           <label>
             <span class="w-full p-3 text-left block">图片alt：</span>
-            <input v-model="form.alt" class="w-full p-2 border border-slate-300 rounded focus:ring-2 focus:ring-blue-400 outline-none" placeholder="图片alt" />
+            <input v-model="form.alt" class="w-full p-2 border border-slate-300 rounded focus:ring-2 focus:ring-ice-400 outline-none" placeholder="图片alt" />
           </label>
         </div>
       </template>
@@ -74,7 +74,7 @@
         <div class="mb-3">
           <label>
             <span class="w-full p-3 text-left block">分类：</span>
-            <select v-model="form.category_id" class="w-full p-2 border border-slate-300 rounded focus:ring-2 focus:ring-blue-400 outline-none">
+            <select v-model="form.category_id" class="w-full p-2 border border-slate-300 rounded focus:ring-2 focus:ring-ice-400 outline-none">
               <option v-for="cat in categories" :key="cat.category_id" :value="cat.category_id">{{ cat.name }}</option>
             </select>
           </label>
@@ -82,19 +82,19 @@
         <div class="mb-3">
           <label>
             <span class="w-full p-3 text-left block">标题：</span>
-            <input v-model="form.title" class="w-full p-2 border border-slate-300 rounded focus:ring-2 focus:ring-blue-400 outline-none" placeholder="楼层标题" />
+            <input v-model="form.title" class="w-full p-2 border border-slate-300 rounded focus:ring-2 focus:ring-ice-400 outline-none" placeholder="楼层标题" />
           </label>
         </div>
         <div class="mb-3">
           <label>
             <span class="w-full p-3 text-left block">描述：</span>
-            <textarea v-model="form.description" class="w-full p-2 border border-slate-300 rounded focus:ring-2 focus:ring-blue-400 outline-none" placeholder="楼层描述" />
+            <textarea v-model="form.description" class="w-full p-2 border border-slate-300 rounded focus:ring-2 focus:ring-ice-400 outline-none" placeholder="楼层描述" />
           </label>
         </div>
       </template>
 
       <div class="flex gap-4">
-        <button @click="save" class="px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition">保存</button>
+        <button @click="save" class="px-6 py-2 bg-ice-500 text-white rounded hover:bg-ice-600 transition">保存</button>
         <router-link to="/floor" class="px-6 py-2 border border-slate-300 rounded hover:bg-slate-50 transition">取消</router-link>
       </div>
     </div>
@@ -109,6 +109,7 @@ import { createFloor, fetchCategories, fetchFloorById, updateFloor } from "@/ser
 import type { Category } from "@/types";
 import { uploadImage } from "@/services/upload.ts";
 import Loading from "@/components/Loading.vue";
+import { toast } from "@/composables/useToast.ts";
 
 const route = useRoute()
 const router = useRouter()
@@ -149,34 +150,48 @@ onMounted(loadData)
 
 async function loadData() {
   saving.value = true
-  const data = await fetchCategories()
-  categories.value = data.items
-  if (isEdit.value) {
-    const floor = await fetchFloorById(route.params.floor_id as string)
-    if (floor) {
-      form.title = floor.title
-      form.type_id = floor.type_id
-      form.category_id = floor.category_id
-      form.description = floor.description ? floor.description : ''
-      form.image = floor.image ? floor.image : ''
-      form.link = floor.link ? floor.link : ''
-      form.alt = floor.alt ? floor.alt : ''
-      form.sort = floor.sort ? floor.sort : 0
-      form.is_show = floor.is_show ? floor.is_show : 1
+
+  await fetchCategories().then(res => {
+    categories.value = res.data.items
+    if (isEdit.value) {
+      fetchFloorById(route.params.floor_id as string).then(res => {
+        if (res.data) {
+          form.title = res.data.title
+          form.type_id = res.data.type_id
+          form.category_id = res.data.category_id
+          form.description = res.data.description ? res.data.description : ''
+          form.image = res.data.image ? res.data.image : ''
+          form.link = res.data.link ? res.data.link : ''
+          form.alt = res.data.alt ? res.data.alt : ''
+          form.sort = res.data.sort ? res.data.sort : 0
+          form.is_show = res.data.is_show ? res.data.is_show : 1
+        }
+      })
     }
-  }
+  })
+
   saving.value = false
 }
 
-const save = async () => {
+async function save() {
   const payload = { ...form }
   saving.value = true
+
   if (isEdit.value) {
-    await updateFloor(route.params.floor_id as string, payload)
+    await updateFloor(route.params.floor_id as string, payload).then(_res => {
+      toast.success('编辑成功')
+    }).catch(_e => {
+      toast.error('编辑失败')
+    })
   } else {
-    const result = await createFloor(payload)
-    router.push(`/floor/${result}/edit`)
+    await createFloor(payload).then(res => {
+      toast.success('添加成功')
+      router.push(`/floor/${res.data}/edit`)
+    }).catch(_e => {
+      toast.error('添加失败')
+    })
   }
+
   saving.value = false
 }
 
@@ -196,18 +211,19 @@ async function uploadFile() {
   if (!selectedFile.value) return
   uploading.value = true
   uploadError.value = ''
-  try {
-    const result = await uploadImage(selectedFile.value)
-    uploadedUrl.value = result.url
+
+  await uploadImage(selectedFile.value).then(res => {
+    uploadedUrl.value = res.data.url
     form.image = uploadedUrl.value
     // 清空文件选择
     if (fileInput.value) fileInput.value.value = ''
     selectedFile.value = null
-  } catch (e: any) {
+  }).catch(e => {
     uploadError.value = e.message || '上传失败'
-  } finally {
+    toast.error(uploadError.value)
+  }).finally(() => {
     uploading.value = false
-  }
+  })
 }
 </script>
 

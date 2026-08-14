@@ -10,7 +10,7 @@
           <label>
             <span class="w-full p-3 text-left block">管理员名称：</span>
             <span class="columns-2 block">
-            <input v-model="form.username" disabled class="w-full p-2 border border-slate-300 rounded focus:ring-2 focus:ring-blue-400 outline-none" placeholder="输入管理员名称"/>
+            <input v-model="form.username" disabled class="w-full p-2 border border-slate-300 rounded focus:ring-2 focus:ring-ice-400 outline-none" placeholder="输入管理员名称"/>
           </span>
           </label>
         </div>
@@ -18,8 +18,8 @@
           <label>
             <span class="w-full p-3 text-left block">管理员密码：</span>
             <span class="columns-2 block">
-            <input v-model="form.password" type="password" class="w-full p-2 border border-slate-300 rounded focus:ring-2 focus:ring-blue-400 outline-none" placeholder="输入新的密码"/>
-            <button @click="handleResetPassword" class="px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition block">重置密码</button>
+            <input v-model="form.password" type="password" class="w-full p-2 border border-slate-300 rounded focus:ring-2 focus:ring-ice-400 outline-none" placeholder="输入新的密码"/>
+            <button @click="handleResetPassword" class="px-6 py-2 bg-ice-500 text-white rounded hover:bg-ice-600 transition block">重置密码</button>
           </span>
           </label>
         </div>
@@ -33,6 +33,7 @@
 import { onMounted, reactive, ref } from 'vue'
 import { useAuthStore } from "@/stores/auth.ts"
 import Loading from "@/components/Loading.vue";
+import { toast } from "@/composables/useToast.ts";
 
 const authStore = useAuthStore()
 const loading = ref(false)
@@ -53,9 +54,14 @@ async function handleResetPassword() {
   loading.value = true
   error.value = ''
   try {
-    await authStore.resetPassword(form)
+    await authStore.resetPassword(form).then(_res => {
+      toast.success('重置密码成功')
+    }).catch(_e => {
+      toast.error('重置密码失败')
+    })
   } catch (e: any) {
     error.value = e?.response?.data?.message
+    toast.error(error.value)
   } finally {
     loading.value = false
   }

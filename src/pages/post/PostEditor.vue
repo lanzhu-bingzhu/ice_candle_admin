@@ -5,13 +5,13 @@
       <div class="mb-3">
         <label>
           <span class="w-full p-3 text-left block">标题：</span>
-          <input v-model="form.title" class="w-full p-2 border border-slate-300 rounded focus:ring-2 focus:ring-blue-400 outline-none" placeholder="文章标题" />
+          <input v-model="form.title" class="w-full p-2 border border-slate-300 rounded focus:ring-2 focus:ring-ice-400 outline-none" placeholder="文章标题" />
         </label>
       </div>
       <div class="mb-3">
         <label>
           <span class="w-full p-3 text-left block">分类：</span>
-          <select v-model="form.category_id" class="w-full p-2 border border-slate-300 rounded focus:ring-2 focus:ring-blue-400 outline-none">
+          <select v-model="form.category_id" class="w-full p-2 border border-slate-300 rounded focus:ring-2 focus:ring-ice-400 outline-none">
             <option v-for="cat in categories" :key="cat.category_id" :value="cat.category_id">{{ cat.name }}</option>
           </select>
         </label>
@@ -21,7 +21,7 @@
         <div class="bg-slate-50 rounded p-4 border border-slate-200 space-y-3">
           <div class="flex flex-wrap items-center gap-3">
             <input ref="fileCoverInput" type="file" accept="image/*" @change="handleCoverFileChange" class="text-sm" />
-            <button @click="uploadCoverFile" :disabled="!selectedCoverFile || uploadingCover" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:opacity-50 transition text-sm">
+            <button @click="uploadCoverFile" :disabled="!selectedCoverFile || uploadingCover" class="px-4 py-2 bg-ice-500 text-white rounded hover:bg-ice-600 disabled:opacity-50 transition text-sm">
               {{ uploadingCover ? '上传中...' : '上传图片' }}
             </button>
             <span v-if="uploadCoverError" class="text-red-500 text-sm">{{ uploadCoverError }}</span>
@@ -78,7 +78,7 @@
         <div class="mb-3">
           <label>
             <span class="w-full p-3 text-left block">摘要：</span>
-            <textarea v-model="form.summary" class="w-full p-2 border border-slate-300 rounded focus:ring-2 focus:ring-blue-400 outline-none" placeholder="文章摘要" />
+            <textarea v-model="form.summary" class="w-full p-2 border border-slate-300 rounded focus:ring-2 focus:ring-ice-400 outline-none" placeholder="文章摘要" />
           </label>
         </div>
         <div class="mb-3">
@@ -92,7 +92,7 @@
           <div class="bg-slate-50 rounded p-4 border border-slate-200 space-y-3">
             <div class="flex flex-wrap items-center gap-3">
               <input ref="fileInput" type="file" accept="image/*" @change="handleFileChange" class="text-sm" />
-              <button @click="uploadMediaFile" :disabled="!selectedFile || uploading" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:opacity-50 transition text-sm">
+              <button @click="uploadMediaFile" :disabled="!selectedFile || uploading" class="px-4 py-2 bg-ice-500 text-white rounded hover:bg-ice-600 disabled:opacity-50 transition text-sm">
                 {{ uploading ? '上传中...' : '上传图片' }}
               </button>
               <span v-if="uploadError" class="text-red-500 text-sm">{{ uploadError }}</span>
@@ -111,13 +111,13 @@
         <div class="mb-3">
           <label>
             <span class="w-full p-3 text-left block">描述：</span>
-            <textarea v-model="form.description" class="w-full p-2 border border-slate-300 rounded focus:ring-2 focus:ring-blue-400 outline-none" placeholder="图片描述" />
+            <textarea v-model="form.description" class="w-full p-2 border border-slate-300 rounded focus:ring-2 focus:ring-ice-400 outline-none" placeholder="图片描述" />
           </label>
         </div>
       </template>
 
       <div class="flex gap-4">
-        <button @click="save" class="px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition">保存</button>
+        <button @click="save" class="px-6 py-2 bg-ice-500 text-white rounded hover:bg-ice-600 transition">保存</button>
         <router-link to="/post" class="px-6 py-2 border border-slate-300 rounded hover:bg-slate-50 transition">取消</router-link>
       </div>
     </div>
@@ -133,6 +133,7 @@ import { fetchAllCategories, fetchAllPostTags, createPost, updatePost, fetchPost
 import type { Category, PostTag } from '@/types'
 import { uploadImage } from "@/services/upload.ts";
 import Loading from "@/components/Loading.vue";
+import { toast } from "@/composables/useToast.ts";
 
 const route = useRoute()
 const router = useRouter()
@@ -183,23 +184,27 @@ onMounted(loadData)
 
 async function loadData() {
   saving.value = true
-  const allCategory = await fetchAllCategories()
-  categories.value = allCategory.items
-  const allPostTag = await fetchAllPostTags()
-  postTags.value = allPostTag.items
+  await fetchAllCategories().then(res => {
+    categories.value = res.data.items
+  })
+  await fetchAllPostTags().then(res => {
+    postTags.value = res.data.items
+  })
   if (isEdit.value) {
-    const post = await fetchPostById(route.params.post_id as string)
-    if (post) {
-      form.title = post.title
-      form.type_id = post.type_id
-      form.category_id = post.category_id
-      form.summary = post.summary ? post.summary : ''
-      form.content = post.content ? post.content : ''
-      form.cover = post.cover ? post.cover : ''
-      form.images = post.images ? post.images : []
-      form.tags = post.tags ? post.tags : []
-      form.is_show = post.is_show ? post.is_show : 1
-    }
+    await fetchPostById(route.params.post_id as string).then(res => {
+      const post = res.data
+      if (post) {
+        form.title = post.title
+        form.type_id = post.type_id
+        form.category_id = post.category_id
+        form.summary = post.summary ? post.summary : ''
+        form.content = post.content ? post.content : ''
+        form.cover = post.cover ? post.cover : ''
+        form.images = post.images ? post.images : []
+        form.tags = post.tags ? post.tags : []
+        form.is_show = post.is_show ? post.is_show : 1
+      }
+    })
   }
   saving.value = false
 }
@@ -224,7 +229,6 @@ function clearCoverUpload() {
   form.cover = ''
 }
 
-
 function clearUpload(index: number) {
   form.images = form.images.filter((_item, key) => key !== index)
 }
@@ -233,46 +237,58 @@ async function uploadCoverFile() {
   if (!selectedCoverFile.value) return
   uploadingCover.value = true
   uploadCoverError.value = ''
-  try {
-    const result = await uploadImage(selectedCoverFile.value)
+
+  await uploadImage(selectedCoverFile.value).then(res => {
+    const result = res.data
     uploadedCoverUrl.value = result.url
     form.cover = uploadedCoverUrl.value
     // 清空文件选择
     if (fileCoverInput.value) fileCoverInput.value.value = ''
     selectedCoverFile.value = null
-  } catch (e: any) {
+  }).catch(e => {
     uploadCoverError.value = e.message || '上传失败'
-  } finally {
+    toast.error(uploadCoverError.value)
+  }).finally(() => {
     uploadingCover.value = false
-  }
+  })
 }
 
 async function uploadMediaFile() {
   if (!selectedFile.value) return
   uploading.value = true
   uploadError.value = ''
-  try {
-    const result = await uploadImage(selectedFile.value)
+
+  await uploadImage(selectedFile.value).then(res => {
+    const result = res.data
     uploadedUrl.value = result.url
     form.images.push(uploadedUrl.value)
     // 清空文件选择
     if (fileInput.value) fileInput.value.value = ''
     selectedFile.value = null
-  } catch (e: any) {
+  }).catch(e => {
     uploadError.value = e.message || '上传失败'
-  } finally {
+    toast.error(uploadError.value)
+  }).finally(() => {
     uploading.value = false
-  }
+  })
 }
 
-const save = async () => {
+async function save() {
   const payload = { ...form }
   saving.value = true
   if (isEdit.value) {
-    await updatePost(route.params.post_id as string, payload)
+    await updatePost(route.params.post_id as string, payload).then(_res => {
+      toast.success('编辑成功')
+    }).catch(_e => {
+      toast.error('编辑失败')
+    })
   } else {
-    const result = await createPost(payload)
-    router.push(`/post/${result}/edit`)
+    await createPost(payload).then(res => {
+      toast.success('添加成功')
+      router.push(`/post/${res.data}/edit`)
+    }).catch(_e => {
+      toast.error('添加失败')
+    })
   }
   saving.value = false
 }
