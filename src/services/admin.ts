@@ -68,4 +68,4 @@ export const fetchTaskById = (task_id: string | number) => request.get<any, Task
 
 export const fetchConfig = () => request.get<any, ConfigListResponse>('/config')
 
-export const createConfig = (data: Partial<Config>) => request.post<any, ConfigResponse>('/config', data)
+export const createConfig = (data: any) => request.post<any, ConfigResponse>('/config', data)

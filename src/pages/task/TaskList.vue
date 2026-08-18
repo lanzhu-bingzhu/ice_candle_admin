@@ -77,7 +77,7 @@ async function loadTasks() {
   await fetchTasks().then(res => {
     tasks.value = res.data.items
     totalCount.value = res.data.count
-  }).catch(e => {
+  }).catch(_e => {
     toast.error(error.value || '加载任务失败')
   }).finally(() => {
     loading.value = false
