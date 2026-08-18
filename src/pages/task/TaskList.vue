@@ -54,6 +54,7 @@ import { onMounted, ref } from 'vue'
 import type { Task } from '@/types'
 import { deleteTask, fetchTasks } from "@/services/admin.ts";
 import Loading from "@/components/Loading.vue";
+import { toast } from "@/composables/useToast.ts";
 
 const columns = ref<Array<any>>([
   { name: '名称', class: 'text-sm p-4' },
@@ -77,7 +78,7 @@ async function loadTasks() {
     tasks.value = res.data.items
     totalCount.value = res.data.count
   }).catch(e => {
-    error.value = e.message || '加载任务失败'
+    toast.error(error.value || '加载任务失败')
   }).finally(() => {
     loading.value = false
   })
@@ -90,7 +91,7 @@ async function handleDelete(id: string | number) {
     tasks.value = tasks.value.filter(t => t.task_id !== id)
     totalCount.value--
   }).catch(e => {
-    alert('删除失败：' + (e.message || '未知错误'))
+    toast.error('删除失败：' + (e.message || '未知错误'))
   })
 }
 

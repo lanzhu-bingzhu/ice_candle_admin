@@ -73,6 +73,7 @@ import { ref, onMounted } from 'vue'
 import { fetchCategories, deleteCategory } from '@/services/admin'
 import type { Category } from '@/types'
 import Loading from "@/components/Loading.vue";
+import { toast } from "@/composables/useToast.ts";
 
 const categories = ref<Category[]>([])
 const totalCount = ref(0)
@@ -95,6 +96,7 @@ async function loadCategories() {
     totalCount.value = res.data.count
   }).catch(e => {
     error.value = e.message || '加载分类失败'
+    toast.error(error.value || '加载分类失败')
   }).finally(() => {
     loading.value = false
   })
@@ -107,7 +109,7 @@ async function handleDelete(categoryId: string | number) {
     categories.value = categories.value.filter((c) => c.category_id !== categoryId)
     totalCount.value--
   }).catch(e => {
-    alert('删除失败：' + (e.message || '未知错误'))
+    toast.error('删除失败：' + (e.message || '未知错误'))
   })
 }
 

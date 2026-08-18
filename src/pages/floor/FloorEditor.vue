@@ -51,8 +51,10 @@
             </div>
             <!-- 上传结果预览 -->
             <div v-if="form.image" class="flex items-center gap-4">
-              <img :src="form.image" class="w-20 h-20 object-cover rounded border" alt="已上传图片"/>
-              <button @click="clearUpload()" class="absolute -top-2 -right-2 w-5 h-5 bg-red-500 text-white rounded-full flex items-center justify-center text-xs hover:bg-red-600 transition" title="清除图片">×</button>
+              <div class="relative">
+                <img :src="form.image" class="w-20 h-20 object-cover rounded border" alt="已上传图片"/>
+                <button @click="clearUpload()" class="absolute -top-2 -right-2 w-5 h-5 bg-red-500 text-white rounded-full flex items-center justify-center text-xs hover:bg-red-600 transition" title="清除图片">×</button>
+              </div>
             </div>
           </div>
         </div>

@@ -59,6 +59,7 @@ import { ref, onMounted } from 'vue'
 import { fetchPosts, deletePost as apiDelete } from '@/services/admin'
 import type { Post } from '@/types'
 import Loading from "@/components/Loading.vue";
+import { toast } from "@/composables/useToast.ts";
 
 const posts = ref<Post[]>([])
 const totalCount = ref(0)
@@ -73,6 +74,7 @@ async function loadPosts() {
     totalCount.value = res.data.count
   }).catch(e => {
     error.value = e.message || '加载文章失败'
+    toast.error(error.value || '加载文章失败')
   }).finally(() => {
     loading.value = false
   })
@@ -84,7 +86,7 @@ async function handleDelete(postId: string | number) {
     posts.value = posts.value.filter(p => p.post_id !== postId)
     totalCount.value--
   }).catch(e => {
-    alert('删除失败：' + (e.message || '未知错误'))
+    toast.error('删除失败：' + (e.message || '未知错误'))
   })
 }
 

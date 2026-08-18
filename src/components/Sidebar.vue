@@ -16,6 +16,7 @@ import { ref } from "vue";
 
 const list: any = ref([
   { name: '仪表盘', link: '/home' },
+  { name: '网站配置', link: '/config' },
   { name: '文章管理', link: '/post' },
   { name: '分类管理', link: '/category' },
   { name: '楼层管理', link: '/floor' },

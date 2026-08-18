@@ -277,7 +277,7 @@ async function save() {
   const payload = { ...form }
   saving.value = true
   if (isEdit.value) {
-    await updatePost(route.params.post_id as string, payload).then(_res => {
+    await updatePost(route.params.post_id as string, payload).then(() => {
       toast.success('编辑成功')
     }).catch(_e => {
       toast.error('编辑失败')

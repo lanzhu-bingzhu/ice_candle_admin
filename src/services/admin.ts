@@ -1,5 +1,19 @@
 import request from './api'
-import type { Post, PostResponse, PostListResponse, Category, CategoryResponse, CategoryListResponse, Floor, FloorResponse, FloorListResponse, TaskResponse, TaskListResponse, PostTagListResponse } from '@/types'
+import type {
+  Post,
+  PostResponse,
+  PostListResponse,
+  Category,
+  CategoryResponse,
+  CategoryListResponse,
+  Floor,
+  FloorResponse,
+  FloorListResponse,
+  TaskResponse,
+  TaskListResponse,
+  PostTagListResponse,
+  Config, Task, ConfigListResponse, ConfigResponse
+} from '@/types'
 
 // ========== 文章 ==========
 export const fetchPosts = () => request.get<any, PostListResponse>('/post')
@@ -42,10 +56,16 @@ export const fetchFloorById = (floor_id: string | number) => request.get<any, Fl
 // ========== 楼层 ==========
 export const fetchTasks = () => request.get<any, TaskListResponse>('/task')
 
-export const createTask = (data: Partial<Floor>) => request.post<any, TaskResponse>('/task', data)
+export const createTask = (data: Partial<Task>) => request.post<any, TaskResponse>('/task', data)
 
-export const updateTask = (task_id: string | number, data: Partial<Floor>) => request.put<any, TaskResponse>(`/task/${task_id}`, data)
+export const updateTask = (task_id: string | number, data: Partial<Task>) => request.put<any, TaskResponse>(`/task/${task_id}`, data)
 
 export const deleteTask = (task_id: string | number) => request.delete<any, TaskResponse>(`/task/${task_id}`)
 
 export const fetchTaskById = (task_id: string | number) => request.get<any, TaskResponse>(`/task/${task_id}`)
+
+// ========== 网站配置 ==========
+
+export const fetchConfig = () => request.get<any, ConfigListResponse>('/config')
+
+export const createConfig = (data: Partial<Config>) => request.post<any, ConfigResponse>('/config', data)
