@@ -200,7 +200,7 @@ const form = reactive<{
     title: string,
     description: string,
     details: string,
-    status_id: string | number
+    status_id: number
     completed_at: string
     result: {
       text: string,

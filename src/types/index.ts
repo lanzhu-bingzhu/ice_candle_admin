@@ -110,13 +110,13 @@ export interface Task {
   deadline: string
   task_nodes: TaskNode[]
   is_show: string | number
-  created_at: string
-  updated_at: string
+  created_at?: string
+  updated_at?: string
 }
 
 export interface TaskNode {
-  task_node_id: string | number
-  task_id: string | number
+  task_node_id?: string | number
+  task_id?: string | number
   title: string
   description: string
   details: string
@@ -126,8 +126,8 @@ export interface TaskNode {
     text: string,
     images: string[],
   }
-  created_at: string
-  updated_at: string
+  created_at?: string
+  updated_at?: string
 }
 
 export interface TaskListResponse {
