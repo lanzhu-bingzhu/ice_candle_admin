@@ -166,3 +166,24 @@ export interface PostTagResponse {
   message: string
   data: PostTag
 }
+
+export interface Config {
+  config_id: string | number
+  name: string
+  value: any
+}
+
+export interface ConfigListResponse {
+  code: number
+  message: string
+  data: {
+    items: Config[]
+    count: number
+  }
+}
+
+export interface ConfigResponse {
+  code: number
+  message: string
+  data: Config
+}

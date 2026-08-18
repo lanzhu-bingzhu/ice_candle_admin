@@ -6,13 +6,13 @@
       <form @submit.prevent="handleLogin" class="space-y-4 text-sm">
         <div>
           <label class="block text-left font-medium text-slate-600 mb-1">用户名：</label>
-          <input v-model="form.username" type="text" class="w-full p-3 border border-slate-300 rounded focus:ring-2 focus:ring-blue-400 outline-none" placeholder="请输入用户名" required />
+          <input v-model="form.username" type="text" class="w-full p-3 border border-slate-300 rounded focus:ring-2 focus:ring-ice-400 outline-none" placeholder="请输入用户名" required />
         </div>
         <div>
           <label class="block text-left font-medium text-slate-600 mb-1">密码：</label>
-          <input v-model="form.password" type="password" class="w-full p-3 border border-slate-300 rounded focus:ring-2 focus:ring-blue-400 outline-none" placeholder="请输入密码" required />
+          <input v-model="form.password" type="password" class="w-full p-3 border border-slate-300 rounded focus:ring-2 focus:ring-ice-400 outline-none" placeholder="请输入密码" required />
         </div>
-        <button type="submit" class="w-full py-3 bg-blue-500 text-white rounded hover:bg-blue-600 transition disabled:opacity-50" :disabled="loading">
+        <button type="submit" class="w-full py-3 bg-ice-500 text-white rounded hover:bg-ice-600 transition disabled:opacity-50" :disabled="loading">
           {{ loading ? '登录中...' : '登录' }}
         </button>
         <p v-if="error" class="text-red-500 text-center">{{ error }}</p>
@@ -24,6 +24,7 @@
 <script setup lang="ts">
 import { reactive, ref } from 'vue'
 import { useAuthStore } from '@/stores/auth'
+import { toast } from "@/composables/useToast.ts";
 
 const authStore = useAuthStore()
 const loading = ref(false)
@@ -37,12 +38,13 @@ const form = reactive({
 async function handleLogin() {
   loading.value = true
   error.value = ''
-  try {
-    await authStore.login(form)
-  } catch (e: any) {
+  await authStore.login(form).then(_res => {
+    toast.success('登录成功')
+  }).catch(e => {
     error.value = e?.response?.data?.message || '登录失败，请检查用户名和密码'
-  } finally {
+    toast.error(error.value)
+  }).finally(() => {
     loading.value = false
-  }
+  })
 }
 </script>

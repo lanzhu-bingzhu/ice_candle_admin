@@ -3,7 +3,7 @@
     <div class="flex justify-between items-center">
       <h2 class="text-xl font-bold text-slate-800">任务管理</h2>
       <div>
-        <button @click="loadTasks" class="text-sm px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition">查询</button>
+        <button @click="loadTasks" class="text-sm px-4 py-2 bg-ice-500 text-white rounded hover:bg-ice-600 transition">查询</button>
         <router-link to="/task/new" class="text-sm px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition ml-2">
           新建任务
         </router-link>
@@ -28,7 +28,7 @@
           <td class="p-4 hidden md:table-cell">{{ task.deadline }}</td>
           <td class="p-4 hidden md:table-cell">{{ task.created_at }}</td>
           <td class="p-4 space-x-2">
-            <router-link :to="`/task/${task.task_id}/edit`" class="text-blue-500 hover:underline">
+            <router-link :to="`/task/${task.task_id}/edit`" class="text-ice-500 hover:underline">
               编辑
             </router-link>
             <button @click="handleDelete(task.task_id)" class="text-red-400 hover:underline">
@@ -54,6 +54,7 @@ import { onMounted, ref } from 'vue'
 import type { Task } from '@/types'
 import { deleteTask, fetchTasks } from "@/services/admin.ts";
 import Loading from "@/components/Loading.vue";
+import { toast } from "@/composables/useToast.ts";
 
 const columns = ref<Array<any>>([
   { name: '名称', class: 'text-sm p-4' },
@@ -72,26 +73,26 @@ const error = ref<string | null>(null)
 async function loadTasks() {
   loading.value = true
   error.value = null
-  try {
-    const data = await fetchTasks()
-    tasks.value = data.items
-    totalCount.value = data.count
-  } catch (e: any) {
-    error.value = e.message || '加载任务失败'
-  } finally {
+
+  await fetchTasks().then(res => {
+    tasks.value = res.data.items
+    totalCount.value = res.data.count
+  }).catch(e => {
+    toast.error(error.value || '加载任务失败')
+  }).finally(() => {
     loading.value = false
-  }
+  })
 }
 
 async function handleDelete(id: string | number) {
   if (!confirm('确定删除这个任务吗？')) return
-  try {
-    await deleteTask(String(id))
+
+  await deleteTask(String(id)).then(_res => {
     tasks.value = tasks.value.filter(t => t.task_id !== id)
     totalCount.value--
-  } catch (e: any) {
-    alert('删除失败：' + (e.message || '未知错误'))
-  }
+  }).catch(e => {
+    toast.error('删除失败：' + (e.message || '未知错误'))
+  })
 }
 
 onMounted(loadTasks)

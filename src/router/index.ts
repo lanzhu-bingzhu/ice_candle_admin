@@ -11,6 +11,7 @@ import TaskList from '@/pages/task/TaskList.vue'
 import TaskEditor from '@/pages/task/TaskEditor.vue'
 import Login from '@/pages/Login.vue'
 import UserInfo from "@/pages/setting/UserInfo.vue";
+import ConfigEditor from "@/pages/configuration/ConfigEditor.vue";
 
 const routes = [
   {
@@ -38,6 +39,7 @@ const routes = [
       { path: 'task/new', name: 'task-create', component: TaskEditor },
       { path: 'task/:task_id/edit', name: 'task-edit', component: TaskEditor },
       { path: 'setting', name: 'setting', component: UserInfo },
+      { path: 'config', name: 'config', component: ConfigEditor },
     ],
   },
 ]

@@ -3,7 +3,7 @@
     <div class="flex justify-between items-center">
       <h2 class="text-xl font-bold text-slate-800">分类管理</h2>
       <div>
-        <button @click="loadCategories" class="text-sm px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition">查询</button>
+        <button @click="loadCategories" class="text-sm px-4 py-2 bg-ice-500 text-white rounded hover:bg-ice-600 transition">查询</button>
         <router-link to="/category/new" class="text-sm px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition ml-2">
           新建分类
         </router-link>
@@ -32,7 +32,7 @@
             <span v-if="cat.type === 'category'" class="text-xs px-2 py-0.5 rounded-full bg-purple-100 text-purple-700">
               {{ cat.type }}
             </span>
-            <span v-if="cat.type === 'article'" class="text-xs px-2 py-0.5 rounded-full bg-blue-100 text-blue-700">
+            <span v-if="cat.type === 'article'" class="text-xs px-2 py-0.5 rounded-full bg-ice-100 text-ice-700">
               {{ cat.type }}
             </span>
             <span v-if="cat.type === 'image-text'" class="text-xs px-2 py-0.5 rounded-full bg-lime-100 text-lime-700">
@@ -47,7 +47,7 @@
             {{ cat.created_at || '-' }}
           </td>
           <td class="p-4 space-x-2">
-            <router-link :to="`/category/${cat.category_id}/edit`" class="text-blue-500 hover:underline">
+            <router-link :to="`/category/${cat.category_id}/edit`" class="text-ice-500 hover:underline">
               编辑
             </router-link>
             <button @click="handleDelete(cat.category_id)" class="text-red-400 hover:underline">
@@ -73,6 +73,7 @@ import { ref, onMounted } from 'vue'
 import { fetchCategories, deleteCategory } from '@/services/admin'
 import type { Category } from '@/types'
 import Loading from "@/components/Loading.vue";
+import { toast } from "@/composables/useToast.ts";
 
 const categories = ref<Category[]>([])
 const totalCount = ref(0)
@@ -89,26 +90,27 @@ function getParentName(parentId?: string | number | null) {
 async function loadCategories() {
   loading.value = true
   error.value = null
-  try {
-    const data = await fetchCategories()
-    categories.value = data.items
-    totalCount.value = data.count
-  } catch (e: any) {
+
+  await fetchCategories().then(res => {
+    categories.value = res.data.items
+    totalCount.value = res.data.count
+  }).catch(e => {
     error.value = e.message || '加载分类失败'
-  } finally {
+    toast.error(error.value || '加载分类失败')
+  }).finally(() => {
     loading.value = false
-  }
+  })
 }
 
 async function handleDelete(categoryId: string | number) {
   if (!confirm('确定要删除该分类吗？')) return
-  try {
-    await deleteCategory(categoryId)
+
+  await deleteCategory(categoryId).then(_res => {
     categories.value = categories.value.filter((c) => c.category_id !== categoryId)
     totalCount.value--
-  } catch (e: any) {
-    alert('删除失败：' + (e.message || '未知错误'))
-  }
+  }).catch(e => {
+    toast.error('删除失败：' + (e.message || '未知错误'))
+  })
 }
 
 onMounted(loadCategories)

@@ -20,4 +20,4 @@ export interface LoginResult {
 
 export const loginApi = (data: LoginParams) => request.post<any, LoginResult>('/auth/login', data)
 
-export const resetPasswordApi = (data: LoginParams) => request.post<any, Response>('/user/reset_password', data).then(res => res.data)
+export const resetPasswordApi = (data: LoginParams) => request.post<any, Response>('/user/reset_password', data)
