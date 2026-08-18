@@ -12,7 +12,9 @@ import type {
   TaskResponse,
   TaskListResponse,
   PostTagListResponse,
-  Config, Task, ConfigListResponse, ConfigResponse
+  Task,
+  ConfigListResponse,
+  ConfigResponse
 } from '@/types'
 
 // ========== 文章 ==========
