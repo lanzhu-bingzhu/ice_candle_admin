@@ -6,7 +6,8 @@
     "paths": {
       "@/*": [
         "./src/*"
-      ]
+      ],
+      "vue-cropper": ["./src/shims-vue-cropper.d.ts"]
     },
 
     /* Linting */
