@@ -1,16 +1,18 @@
 <template>
   <div>
     <div class="bg-slate-50 rounded p-4 border border-slate-200 space-y-3">
-      <div v-if="modelValue" class="flex items-center gap-4">
-        <div class="relative">
-          <img :src="modelValue" class="w-20 h-20 object-cover rounded" alt="已上传图片"/>
-          <button @click="clearUpload()" class="absolute -top-2 -right-2 w-5 h-5 bg-red-500 text-white rounded-full flex items-center justify-center text-xs hover:bg-red-600 transition" title="清除图片">
-            <span class="icon-[iconoir--xmark]"></span>
-          </button>
-        </div>
+      <div v-if="modelValue.length" class="flex items-center gap-4">
+        <template v-for="(item, index) in modelValue">
+          <div class="relative">
+            <img :src="item" class="w-20 h-20 object-cover rounded" alt="已上传图片"/>
+            <button @click="clearUpload(index)" class="absolute -top-2 -right-2 w-5 h-5 bg-red-500 text-white rounded-full flex items-center justify-center text-xs hover:bg-red-600 transition" title="清除图片">
+              <span class="icon-[iconoir--xmark]"></span>
+            </button>
+          </div>
+        </template>
       </div>
 
-      <template v-if="selectedFile">
+      <template v-if="selectedFile && selectedFileUrl">
         <div class="flex justify-center px-6 pt-5 pb-6 border-2 border-dashed border-slate-300 rounded bg-slate-50 hover:border-ice-400 transition">
           <div class="flex flex-wrap items-center gap-3">
             <img :src="selectedFileUrl" class="w-20 h-20 object-cover rounded" alt="待上传图片"/>
@@ -50,7 +52,7 @@ import { ref } from 'vue'
 import { uploadImage } from '@/services/upload'
 import { toast } from '@/composables/useToast'
 
-const modelValue = defineModel<string>({ type: String, default: '' })
+const modelValue = defineModel<string[]>({ type: Array, default: [] })
 
 const fileInput = ref<HTMLInputElement>()
 const selectedFile = ref<File | null>(null)
@@ -83,7 +85,7 @@ async function uploadFile() {
 
   await uploadImage(selectedFile.value).then(res => {
     const result = res.data
-    modelValue.value = result.url
+    modelValue.value.push(result.url)
     // 清空文件选择
     if (fileInput.value) fileInput.value.value = ''
     selectedFile.value = null
@@ -97,7 +99,7 @@ async function uploadFile() {
   })
 }
 
-function clearUpload() {
-  modelValue.value = ''
+function clearUpload(index: number) {
+  modelValue.value = modelValue.value.filter((_item, key) => key !== index)
 }
 </script>

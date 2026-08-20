@@ -12,7 +12,7 @@
       </div>
       <div class="mb-3">
         <span class="w-full p-3 text-left block">推荐组图：</span>
-        <image-upload v-model="form.recommendations_image"></image-upload>
+        <multiple-image-upload v-model="form.recommendations_image"></multiple-image-upload>
       </div>
       <div class="mb-3">
         <span class="w-full p-3 text-left block">介绍配图：</span>
@@ -37,6 +37,7 @@
 import { reactive, ref, onMounted } from "vue";
 import Loading from "@/components/Loading.vue";
 import ImageUpload from "@/components/ImageUpload.vue";
+import MultipleImageUpload from "@/components/MultipleImageUpload.vue";
 import TiptapEditor from '@/components/TiptapEditor.vue'
 import { fetchConfig, createConfig } from "@/services/admin.ts";
 import { toast } from "@/composables/useToast.ts";
@@ -47,12 +48,14 @@ const form = reactive<{
   recommendations_image: string[],
   introduction_image: string,
   introduction_text: string,
+  test_image: string,
 }>({
   header_image: '',
   navigation_image: '',
   recommendations_image: [],
   introduction_image: '',
-  introduction_text: ''
+  introduction_text: '',
+  test_image: ''
 })
 
 const loading = ref(false)
