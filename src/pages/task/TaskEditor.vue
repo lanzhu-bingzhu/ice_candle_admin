@@ -28,22 +28,7 @@
       </div>
       <div class="mb-3">
         <span class="w-full p-3 text-left block">头图：</span>
-        <div class="bg-slate-50 rounded p-4 border border-slate-200 space-y-3">
-          <div class="flex flex-wrap items-center gap-3">
-            <input ref="fileInput" type="file" accept="image/*" @change="handleFileChange" class="text-sm" />
-            <button @click="uploadFile" :disabled="!selectedFile || uploading" class="px-4 py-2 bg-ice-500 text-white rounded hover:bg-ice-600 disabled:opacity-50 transition text-sm">
-              {{ uploading ? '上传中...' : '上传图片' }}
-            </button>
-            <span v-if="uploadError" class="text-red-500 text-sm">{{ uploadError }}</span>
-          </div>
-          <!-- 上传结果预览 -->
-          <div v-if="form.header_image" class="flex items-center gap-4">
-            <div class="relative">
-              <img :src="form.header_image" class="w-20 h-20 object-cover rounded border" alt="已上传图片"/>
-              <button @click="clearUpload" class="absolute -top-2 -right-2 w-5 h-5 bg-red-500 text-white rounded-full flex items-center justify-center text-xs hover:bg-red-600 transition" title="清除图片">×</button>
-            </div>
-          </div>
-        </div>
+        <image-upload v-model="form.header_image"></image-upload>
       </div>
       <div class="mb-3">
         <label>
@@ -127,24 +112,7 @@
                   </div>
                   <div class="mb-3">
                     <span class="w-full p-3 text-left block">图片：</span>
-                    <div class="bg-slate-50 rounded p-4 border border-slate-200 space-y-3">
-                      <div class="flex flex-wrap items-center gap-3">
-                        <input ref="fileInput" type="file" accept="image/*" @change="handleResultFileChange" class="text-sm" />
-                        <button @click="uploadResultFile(index)" :disabled="!selectedResultFile || uploadingResult" class="px-4 py-2 bg-ice-500 text-white rounded hover:bg-ice-600 disabled:opacity-50 transition text-sm">
-                          {{ uploadingResult ? '上传中...' : '上传图片' }}
-                        </button>
-                        <span v-if="uploadResultError" class="text-red-500 text-sm">{{ uploadError }}</span>
-                      </div>
-                      <!-- 上传结果预览 -->
-                      <div v-if="form.task_nodes[index].result.images" class="flex items-center gap-4">
-                        <template v-for="(item, index2) in form.task_nodes[index].result.images">
-                          <div class="relative">
-                            <img :src="item" class="w-20 h-20 object-cover rounded border" alt="已上传图片"/>
-                            <button @click="clearResultUpload(index, index2)" class="absolute -top-2 -right-2 w-5 h-5 bg-red-500 text-white rounded-full flex items-center justify-center text-xs hover:bg-red-600 transition" title="清除图片">×</button>
-                          </div>
-                        </template>
-                      </div>
-                    </div>
+                    <multiple-image-upload v-model="form.task_nodes[index].result.images"></multiple-image-upload>
                   </div>
                 </div>
               </div>
@@ -167,27 +135,16 @@ import { useRoute, useRouter } from "vue-router";
 import { computed, onMounted, reactive, ref } from "vue";
 import { createTask, fetchTaskById, updateTask } from "@/services/admin.ts";
 import TiptapEditor from '@/components/TiptapEditor.vue'
-import { uploadImage } from "@/services/upload.ts";
 import Loading from "@/components/Loading.vue";
 import { toast } from "@/composables/useToast.ts";
+import ImageUpload from "@/components/ImageUpload.vue";
+import MultipleImageUpload from "@/components/MultipleImageUpload.vue";
 
 const route = useRoute()
 const router = useRouter()
 const isEdit = computed(() => !!route.params.task_id)
 const taskId = isEdit ? route.params.task_id : 0
 const saving = ref(false)
-
-const fileInput = ref<HTMLInputElement>()
-const selectedFile = ref<File | null>(null)
-const uploading = ref(false)
-const uploadError = ref('')
-const uploadedUrl = ref('')
-
-const fileResultInput = ref<HTMLInputElement>()
-const selectedResultFile = ref<File | null>(null)
-const uploadingResult = ref(false)
-const uploadResultError = ref('')
-const uploadedResultUrl = ref('')
 
 const form = reactive<{
   task_id: string | number,
@@ -238,70 +195,6 @@ async function loadData() {
     })
   }
   saving.value = false
-}
-
-function handleFileChange(e: Event) {
-  const target = e.target as HTMLInputElement
-  if (target.files && target.files[0]) {
-    selectedFile.value = target.files[0]
-    uploadError.value = ''
-  }
-}
-
-function handleResultFileChange(e: Event) {
-  const target = e.target as HTMLInputElement
-  if (target.files && target.files[0]) {
-    selectedResultFile.value = target.files[0]
-    uploadResultError.value = ''
-  }
-}
-
-function clearUpload() {
-  form.header_image = ''
-}
-
-function clearResultUpload(i: number, j: number) {
-  form.task_nodes[i].result.images = form.task_nodes[i].result.images.filter((_item, index) => index !== j)
-}
-
-async function uploadFile() {
-  if (!selectedFile.value) return
-  uploading.value = true
-  uploadError.value = ''
-
-  await uploadImage(selectedFile.value).then(res => {
-    const result = res.data
-    uploadedUrl.value = result.url
-    form.header_image = result.url
-    // 清空文件选择
-    if (fileInput.value) fileInput.value.value = ''
-    selectedFile.value = null
-  }).catch(e => {
-    uploadError.value = e.message || '上传失败'
-    toast.error(uploadError.value)
-  }).finally(() => {
-    uploading.value = false
-  })
-}
-
-async function uploadResultFile(i: number) {
-  if (!selectedResultFile.value) return
-  uploadingResult.value = true
-  uploadResultError.value = ''
-
-  await uploadImage(selectedResultFile.value).then(res => {
-    const result = res.data
-    uploadedResultUrl.value = result.url
-    form.task_nodes[i].result.images.push(result.url)
-    // 清空文件选择
-    if (fileResultInput.value) fileResultInput.value.value = ''
-    selectedResultFile.value = null
-  }).catch(e => {
-    uploadResultError.value = e.message || '上传失败'
-    toast.error(uploadResultError.value)
-  }).finally(() => {
-    uploadingResult.value = false
-  })
 }
 
 async function addTaskNode() {

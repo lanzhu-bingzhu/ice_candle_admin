@@ -18,22 +18,7 @@
       </div>
       <div class="mb-3">
         <span class="w-full p-3 text-left block">封面图片：</span>
-        <div class="bg-slate-50 rounded p-4 border border-slate-200 space-y-3">
-          <div class="flex flex-wrap items-center gap-3">
-            <input ref="fileCoverInput" type="file" accept="image/*" @change="handleCoverFileChange" class="text-sm" />
-            <button @click="uploadCoverFile" :disabled="!selectedCoverFile || uploadingCover" class="px-4 py-2 bg-ice-500 text-white rounded hover:bg-ice-600 disabled:opacity-50 transition text-sm">
-              {{ uploadingCover ? '上传中...' : '上传图片' }}
-            </button>
-            <span v-if="uploadCoverError" class="text-red-500 text-sm">{{ uploadCoverError }}</span>
-          </div>
-          <!-- 上传结果预览 -->
-          <div v-if="form.cover" class="flex items-center gap-4">
-            <div class="relative">
-              <img :src="form.cover" class="w-20 h-20 object-cover rounded border" alt="已上传图片"/>
-              <button @click="clearCoverUpload" class="absolute -top-2 -right-2 w-5 h-5 bg-red-500 text-white rounded-full flex items-center justify-center text-xs hover:bg-red-600 transition" title="清除图片">×</button>
-            </div>
-          </div>
-        </div>
+        <cropper-image-upload v-model="form.cover" auto-crop-width="1720" auto-crop-height="572"></cropper-image-upload>
       </div>
       <div class="mb-3">
         <label>
@@ -89,24 +74,7 @@
       <template v-if="form.type_id == 2">
         <div class="mb-3">
           <span class="w-full p-3 text-left block">图片：</span>
-          <div class="bg-slate-50 rounded p-4 border border-slate-200 space-y-3">
-            <div class="flex flex-wrap items-center gap-3">
-              <input ref="fileInput" type="file" accept="image/*" @change="handleFileChange" class="text-sm" />
-              <button @click="uploadMediaFile" :disabled="!selectedFile || uploading" class="px-4 py-2 bg-ice-500 text-white rounded hover:bg-ice-600 disabled:opacity-50 transition text-sm">
-                {{ uploading ? '上传中...' : '上传图片' }}
-              </button>
-              <span v-if="uploadError" class="text-red-500 text-sm">{{ uploadError }}</span>
-            </div>
-            <!-- 上传结果预览 -->
-            <div v-if="form.images" class="flex items-center gap-4">
-              <template v-for="(item, index) in form.images">
-                <div class="relative">
-                  <img :src="item" class="w-20 h-20 object-cover rounded border" alt="已上传图片"/>
-                  <button @click="clearUpload(index)" class="absolute -top-2 -right-2 w-5 h-5 bg-red-500 text-white rounded-full flex items-center justify-center text-xs hover:bg-red-600 transition" title="清除图片">×</button>
-                </div>
-              </template>
-            </div>
-          </div>
+          <multiple-image-upload v-model="form.images"></multiple-image-upload>
         </div>
         <div class="mb-3">
           <label>
@@ -131,9 +99,10 @@ import { useRoute, useRouter } from 'vue-router'
 import TiptapEditor from '@/components/TiptapEditor.vue'
 import { fetchAllCategories, fetchAllPostTags, createPost, updatePost, fetchPostById } from '@/services/admin'
 import type { Category, PostTag } from '@/types'
-import { uploadImage } from "@/services/upload.ts";
 import Loading from "@/components/Loading.vue";
 import { toast } from "@/composables/useToast.ts";
+import MultipleImageUpload from "@/components/MultipleImageUpload.vue";
+import CropperImageUpload from "@/components/CropperImageUpload.vue";
 
 const route = useRoute()
 const router = useRouter()
@@ -168,18 +137,6 @@ const categories = ref<Category[]>([])
 const postTags = ref<PostTag[]>([])
 const saving = ref(false)
 
-const fileCoverInput = ref<HTMLInputElement>()
-const selectedCoverFile = ref<File | null>(null)
-const uploadingCover = ref(false)
-const uploadCoverError = ref('')
-const uploadedCoverUrl = ref('')
-
-const fileInput = ref<HTMLInputElement>()
-const selectedFile = ref<File | null>(null)
-const uploading = ref(false)
-const uploadError = ref('')
-const uploadedUrl = ref('')
-
 onMounted(loadData)
 
 async function loadData() {
@@ -207,70 +164,6 @@ async function loadData() {
     })
   }
   saving.value = false
-}
-
-function handleCoverFileChange(e: Event) {
-  const target = e.target as HTMLInputElement
-  if (target.files && target.files[0]) {
-    selectedCoverFile.value = target.files[0]
-    uploadCoverError.value = ''
-  }
-}
-
-function handleFileChange(e: Event) {
-  const target = e.target as HTMLInputElement
-  if (target.files && target.files[0]) {
-    selectedFile.value = target.files[0]
-    uploadError.value = ''
-  }
-}
-
-function clearCoverUpload() {
-  form.cover = ''
-}
-
-function clearUpload(index: number) {
-  form.images = form.images.filter((_item, key) => key !== index)
-}
-
-async function uploadCoverFile() {
-  if (!selectedCoverFile.value) return
-  uploadingCover.value = true
-  uploadCoverError.value = ''
-
-  await uploadImage(selectedCoverFile.value).then(res => {
-    const result = res.data
-    uploadedCoverUrl.value = result.url
-    form.cover = uploadedCoverUrl.value
-    // 清空文件选择
-    if (fileCoverInput.value) fileCoverInput.value.value = ''
-    selectedCoverFile.value = null
-  }).catch(e => {
-    uploadCoverError.value = e.message || '上传失败'
-    toast.error(uploadCoverError.value)
-  }).finally(() => {
-    uploadingCover.value = false
-  })
-}
-
-async function uploadMediaFile() {
-  if (!selectedFile.value) return
-  uploading.value = true
-  uploadError.value = ''
-
-  await uploadImage(selectedFile.value).then(res => {
-    const result = res.data
-    uploadedUrl.value = result.url
-    form.images.push(uploadedUrl.value)
-    // 清空文件选择
-    if (fileInput.value) fileInput.value.value = ''
-    selectedFile.value = null
-  }).catch(e => {
-    uploadError.value = e.message || '上传失败'
-    toast.error(uploadError.value)
-  }).finally(() => {
-    uploading.value = false
-  })
 }
 
 async function save() {

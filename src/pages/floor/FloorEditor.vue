@@ -41,22 +41,7 @@
       <template v-if="form.type_id == 3">
         <div class="mb-3">
           <span class="w-full p-3 text-left block">图片：</span>
-          <div class="bg-slate-50 rounded p-4 border border-slate-200 space-y-3">
-            <div class="flex flex-wrap items-center gap-3">
-              <input ref="fileInput" type="file" accept="image/*" @change="handleFileChange" class="text-sm" />
-              <button @click="uploadFile" :disabled="!selectedFile || uploading" class="px-4 py-2 bg-ice-500 text-white rounded hover:bg-ice-600 disabled:opacity-50 transition text-sm">
-                {{ uploading ? '上传中...' : '上传图片' }}
-              </button>
-              <span v-if="uploadError" class="text-red-500 text-sm">{{ uploadError }}</span>
-            </div>
-            <!-- 上传结果预览 -->
-            <div v-if="form.image" class="flex items-center gap-4">
-              <div class="relative">
-                <img :src="form.image" class="w-20 h-20 object-cover rounded border" alt="已上传图片"/>
-                <button @click="clearUpload()" class="absolute -top-2 -right-2 w-5 h-5 bg-red-500 text-white rounded-full flex items-center justify-center text-xs hover:bg-red-600 transition" title="清除图片">×</button>
-              </div>
-            </div>
-          </div>
+          <image-upload v-model="form.image"></image-upload>
         </div>
         <div class="mb-3">
           <label>
@@ -109,8 +94,8 @@ import { useRoute, useRouter } from "vue-router";
 import { computed, onMounted, reactive, ref } from "vue";
 import { createFloor, fetchCategories, fetchFloorById, updateFloor } from "@/services/admin.ts";
 import type { Category } from "@/types";
-import { uploadImage } from "@/services/upload.ts";
 import Loading from "@/components/Loading.vue";
+import ImageUpload from "@/components/ImageUpload.vue";
 import { toast } from "@/composables/useToast.ts";
 
 const route = useRoute()
@@ -141,12 +126,6 @@ const form = reactive<{
 
 const categories = ref<Category[]>([])
 const saving = ref(false)
-
-const fileInput = ref<HTMLInputElement>()
-const selectedFile = ref<File | null>(null)
-const uploading = ref(false)
-const uploadError = ref('')
-const uploadedUrl = ref('')
 
 onMounted(loadData)
 
@@ -195,37 +174,6 @@ async function save() {
   }
 
   saving.value = false
-}
-
-function handleFileChange(e: Event) {
-  const target = e.target as HTMLInputElement
-  if (target.files && target.files[0]) {
-    selectedFile.value = target.files[0]
-    uploadError.value = ''
-  }
-}
-
-function clearUpload() {
-  form.image = ''
-}
-
-async function uploadFile() {
-  if (!selectedFile.value) return
-  uploading.value = true
-  uploadError.value = ''
-
-  await uploadImage(selectedFile.value).then(res => {
-    uploadedUrl.value = res.data.url
-    form.image = uploadedUrl.value
-    // 清空文件选择
-    if (fileInput.value) fileInput.value.value = ''
-    selectedFile.value = null
-  }).catch(e => {
-    uploadError.value = e.message || '上传失败'
-    toast.error(uploadError.value)
-  }).finally(() => {
-    uploading.value = false
-  })
 }
 </script>
 
