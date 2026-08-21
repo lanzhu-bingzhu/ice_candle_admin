@@ -168,16 +168,24 @@ export interface PostTagResponse {
 }
 
 export interface Config {
-  config_id: string | number
-  name: string
-  value: any
+  header_image?: string
+  navigation_image?: string
+  recommendations_image?: string[]
+  recommendations_content?: {
+    title: string
+    description: string
+    image: string
+    link: string
+  }[]
+  introduction_image?: string
+  introduction_text?: string
 }
 
 export interface ConfigListResponse {
   code: number
   message: string
   data: {
-    items: Config[]
+    items: Config
     count: number
   }
 }

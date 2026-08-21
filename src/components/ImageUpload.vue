@@ -11,16 +11,14 @@
       </div>
 
       <template v-if="selectedFile">
-        <div class="flex justify-center px-6 pt-5 pb-6 border-2 border-dashed border-slate-300 rounded bg-slate-50 hover:border-ice-400 transition">
-          <div class="flex flex-wrap items-center gap-3">
-            <img :src="selectedFileUrl" class="w-20 h-20 object-cover rounded" alt="待上传图片"/>
-            <button @click="uploadFile" :disabled="!selectedFile || uploading" class="px-4 py-2 bg-ice-500 text-white rounded hover:bg-ice-600 disabled:opacity-50 transition text-sm">
-              {{ uploading ? '上传中...' : '上传图片' }}
-            </button>
-            <button @click="cancelUploadFile" :disabled="!selectedFile || uploading" class="px-4 py-2 border border-slate-300 rounded hover:bg-slate-100 transition text-sm">
-              {{ uploading ? '上传中...' : '取消' }}
-            </button>
-          </div>
+        <div class="flex flex-wrap items-center gap-3">
+          <img :src="selectedFileUrl" class="w-20 h-20 object-cover rounded" alt="待上传图片"/>
+          <button @click="uploadFile" :disabled="!selectedFile || uploading" class="px-4 py-2 bg-ice-500 text-white rounded hover:bg-ice-600 disabled:opacity-50 transition text-sm">
+            {{ uploading ? '上传中...' : '上传图片' }}
+          </button>
+          <button @click="cancelUploadFile" :disabled="!selectedFile || uploading" class="px-4 py-2 border border-slate-300 rounded hover:bg-slate-100 transition text-sm">
+            {{ uploading ? '上传中...' : '取消' }}
+          </button>
         </div>
       </template>
 
@@ -28,14 +26,11 @@
         <span class="text-red-500 text-sm">{{ uploadError }}</span>
       </div>
 
-      <template v-if="!selectedFile">
-        <div class="flex justify-center px-6 pt-5 pb-6 border-2 border-dashed border-slate-300 rounded bg-slate-50 hover:border-ice-400 transition cursor-pointer" @click="triggerFileInput">
+      <template v-if="!selectedFile && !modelValue">
+        <div class="w-20 h-20 flex justify-center items-center border-2 border-dashed border-slate-300 rounded bg-slate-50 hover:border-ice-400 transition cursor-pointer" @click="triggerFileInput">
           <div class="text-center text-sm text-slate-500">
-            <svg class="mx-auto h-12 w-12 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-            </svg>
-            <p class="mt-1">点击选择图片</p>
-            <p class="text-xs text-slate-400">支持 JPG、PNG、GIF</p>
+            <span class="w-6 h-6 icon-[iconoir--upload]"></span>
+            <p>上传</p>
           </div>
         </div>
       </template>

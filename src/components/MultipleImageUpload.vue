@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="bg-slate-50 rounded p-4 border border-slate-200 space-y-3">
-      <div v-if="modelValue.length" class="flex items-center gap-4">
+      <div v-if="modelValue.length" class="flex items-center gap-4 flex-wrap">
         <template v-for="(item, index) in modelValue">
           <div class="relative">
             <img :src="item" class="w-20 h-20 object-cover rounded" alt="已上传图片"/>
@@ -10,10 +10,15 @@
             </button>
           </div>
         </template>
-      </div>
-
-      <template v-if="selectedFile && selectedFileUrl">
-        <div class="flex justify-center px-6 pt-5 pb-6 border-2 border-dashed border-slate-300 rounded bg-slate-50 hover:border-ice-400 transition">
+        <template v-if="!selectedFile">
+          <div class="w-20 h-20 flex justify-center items-center border-2 border-dashed border-slate-300 rounded bg-slate-50 hover:border-ice-400 transition cursor-pointer" @click="triggerFileInput">
+            <div class="text-center text-sm text-slate-500">
+              <span class="w-6 h-6 icon-[iconoir--upload]"></span>
+              <p>上传</p>
+            </div>
+          </div>
+        </template>
+        <template v-if="selectedFile && selectedFileUrl">
           <div class="flex flex-wrap items-center gap-3">
             <img :src="selectedFileUrl" class="w-20 h-20 object-cover rounded" alt="待上传图片"/>
             <button @click="uploadFile" :disabled="!selectedFile || uploading" class="px-4 py-2 bg-ice-500 text-white rounded hover:bg-ice-600 disabled:opacity-50 transition text-sm">
@@ -23,24 +28,21 @@
               {{ uploading ? '上传中...' : '取消' }}
             </button>
           </div>
+        </template>
+      </div>
+
+      <template v-if="!selectedFile && !modelValue.length">
+        <div class="w-20 h-20 flex justify-center items-center border-2 border-dashed border-slate-300 rounded bg-slate-50 hover:border-ice-400 transition cursor-pointer" @click="triggerFileInput">
+          <div class="text-center text-sm text-slate-500">
+            <span class="w-6 h-6 icon-[iconoir--upload]"></span>
+            <p>上传</p>
+          </div>
         </div>
       </template>
 
       <div class="my-3 text-left" v-if="uploadError">
         <span class="text-red-500 text-sm">{{ uploadError }}</span>
       </div>
-
-      <template v-if="!selectedFile">
-        <div class="flex justify-center px-6 pt-5 pb-6 border-2 border-dashed border-slate-300 rounded bg-slate-50 hover:border-ice-400 transition cursor-pointer" @click="triggerFileInput">
-          <div class="text-center text-sm text-slate-500">
-            <svg class="mx-auto h-12 w-12 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-            </svg>
-            <p class="mt-1">点击选择图片</p>
-            <p class="text-xs text-slate-400">支持 JPG、PNG、GIF</p>
-          </div>
-        </div>
-      </template>
     </div>
 
     <input ref="fileInput" type="file" accept="image/*" class="hidden" @change="handleFileChange" />
