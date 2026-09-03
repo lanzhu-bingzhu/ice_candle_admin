@@ -2,15 +2,15 @@
   <div>
     <div class="bg-slate-50 rounded p-4 border border-slate-200 space-y-3">
       <div v-if="modelValue && !showCropper" class="flex items-center gap-4">
-        <div class="relative">
-          <img :src="modelValue" class="w-20 h-20 object-cover rounded" alt="已上传图片"/>
+        <div class="flex-1 relative">
+          <img :src="modelValue" class="w-full object-cover rounded" alt="已上传图片"/>
           <button @click="clearImage" class="absolute -top-2 -right-2 w-5 h-5 bg-red-500 text-white rounded-full flex items-center justify-center text-xs hover:bg-red-600 transition" title="清除图片">
             <span class="icon-[iconoir--xmark]"></span>
           </button>
         </div>
       </div>
 
-      <template v-if="!showCropper">
+      <template v-if="!showCropper && !modelValue">
         <div class="flex justify-center px-6 pt-5 pb-6 border-2 border-dashed border-slate-300 rounded bg-slate-50 hover:border-ice-400 transition cursor-pointer" @click="triggerFileInput">
           <div class="text-center text-sm text-slate-500">
             <svg class="mx-auto h-12 w-12 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
